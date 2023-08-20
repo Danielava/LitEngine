@@ -3,6 +3,7 @@
 //#define MODEL_H
 
 #include <vector>
+#include <string> //getline
 
 using namespace std;
 
@@ -17,9 +18,12 @@ public:
 
 	vector<DirectX::XMFLOAT3> m_Vertices;
 	vector<DirectX::XMFLOAT3> m_Normals;
+	vector<DirectX::XMFLOAT2> m_UVs;
 	vector<DirectX::XMFLOAT3> m_Colors;
 	vector<uint32_t> m_Indices;
 private:
+	stringstream GetModifiedLine(string line, char separator = ' ');
+	bool LineShouldBeSkipped(string line);
 };
 
 //#endif
