@@ -377,8 +377,8 @@ void Sample3DSceneRenderer::CreateWindowSizeDependentResources()
 
 	// Eye is at (0,0.7,1.5), looking at point (0,-0.1,0) with the up-vector along the y-axis.
 	static const XMVECTORF32 eye = { 0.0f, 0.7f, 3.0f, 0.0f };
-	static const XMVECTORF32 at = { 0.0f, -0.1f, 0.0f, 0.0f };
-	static const XMVECTORF32 up = { 0.0f, 1.0f, 0.0f, 0.0f };
+	static const XMVECTORF32 at = { -0.0f, -0.0f, -10.0f, 0.0f }; //0.0f, -0.1f, 0.0f, 0.0f
+	static const XMVECTORF32 up = { 0.0f, 1.0f, 0.0f, 0.0f }; // 0.0f, 1.0f, 0.0f, 0.0f
 
 	XMStoreFloat4x4(&m_constantBufferData.view, XMMatrixTranspose(XMMatrixLookAtRH(eye, at, up)));
 }
@@ -511,7 +511,7 @@ bool Sample3DSceneRenderer::Render(Model* model)
 		//m_commandList->IASetIndexBuffer(&m_indexBufferView);
 		//m_commandList->DrawIndexedInstanced(36, 1, 0, 0, 0); //Daniel: I suspect this one! DrawInstancedIndex() will use the index buffer, use DrawInstanced instead
 
-		m_commandList->DrawInstanced((UINT)model->GetNrOfVertices(), 1, 0, 0); //815
+		m_commandList->DrawInstanced((UINT)model->GetNrOfVertices(), 1, 0, 0); //third param = starvertex location
 
 		// Indicate that the render target will now be used to present when the command list is done executing.
 		CD3DX12_RESOURCE_BARRIER presentResourceBarrier =

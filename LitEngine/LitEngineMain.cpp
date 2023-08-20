@@ -48,7 +48,7 @@ void LitEngineMain::CreateRenderers(const std::shared_ptr<DX::DeviceResources>& 
 
 	//Daniel: TODO: Create the 3D model here!
 	const char glennaFilepath[255] = "../Assets/3DModels/Harmony/Harmony.txt";
-	m_Glenna3DModel = new Model(glennaFilepath);
+	m_Glenna3DModel = new Model(true);
 	m_CubeModel = new Model();
 
 	m_sceneRenderer = std::unique_ptr<Sample3DSceneRenderer>(new Sample3DSceneRenderer(deviceResources, m_Glenna3DModel));
