@@ -1,0 +1,107 @@
+{
+  "version": "2.1.0",
+  "$schema": "https://schemastore.azurewebsites.net/schemas/json/sarif-2.1.0-rtm.5.json",
+  "runs": [
+    {
+      "results": [],
+      "tool": {
+        "driver": {
+          "name": "PREfast",
+          "fullName": "PREfast Code Analysis",
+          "version": "14.37.32822.0",
+          "informationUri": "https://aka.ms/cpp/ca"
+        }
+      },
+      "invocations": [
+        {
+          "executionSuccessful": true
+        }
+      ],
+      "artifacts": [
+        {
+          "location": {
+            "uri": "file:///c:/users/daniel/graphicsprojects/litengine/litengine/litenginemain.cpp"
+          },
+          "roles": [
+            "analysisTarget"
+          ],
+          "hashes": {
+            "sha-256": "f2f6ac25cb9c523e96907ba288e54ff8b1ce2f7bd749753974e6ce2380763ead"
+          }
+        },
+        {
+          "location": {
+            "uri": "file:///c:/users/daniel/graphicsprojects/litengine/litengine/pch.h"
+          },
+          "hashes": {
+            "sha-256": "b6ac349a4e2d44d21eafb410dd76d795f837fa2617d48fe67bacbeacec39e49f"
+          }
+        },
+        {
+          "location": {
+            "uri": "file:///c:/users/daniel/graphicsprojects/litengine/litengine/common/d3dx12.h"
+          },
+          "hashes": {
+            "sha-256": "8e028a8faf19ba367cf72f5a4db0f589c88f0669faabba60dc66af9adbeb01fc"
+          }
+        },
+        {
+          "location": {
+            "uri": "file:///c:/users/daniel/graphicsprojects/litengine/litengine/litenginemain.h"
+          },
+          "hashes": {
+            "sha-256": "d625ca79a3002cd576d10f090950ed25e7843c7859fd8b9e3d65e74085503fa1"
+          }
+        },
+        {
+          "location": {
+            "uri": "file:///c:/users/daniel/graphicsprojects/litengine/litengine/common/steptimer.h"
+          },
+          "hashes": {
+            "sha-256": "67c35cff434633c6689db3341ac19ceae6dd549cc42039ac095597575b5a4c1c"
+          }
+        },
+        {
+          "location": {
+            "uri": "file:///c:/users/daniel/graphicsprojects/litengine/litengine/common/deviceresources.h"
+          },
+          "hashes": {
+            "sha-256": "9458050183707451c386c3fc5a320253e0e11b54ecd9a5f5bf90fd470ca984ea"
+          }
+        },
+        {
+          "location": {
+            "uri": "file:///c:/users/daniel/graphicsprojects/litengine/litengine/content/sample3dscenerenderer.h"
+          },
+          "hashes": {
+            "sha-256": "dc1f9031181128cd2206a69d51c40968439b596369085ea42596dcdc9d0aa1d4"
+          }
+        },
+        {
+          "location": {
+            "uri": "file:///c:/users/daniel/graphicsprojects/litengine/litengine/content/shaderstructures.h"
+          },
+          "hashes": {
+            "sha-256": "088064a4b1d866a30c65bca75eae228ce31e71d391e9daed479603d58684394b"
+          }
+        },
+        {
+          "location": {
+            "uri": "file:///c:/users/daniel/graphicsprojects/litengine/litengine/common/model.h"
+          },
+          "hashes": {
+            "sha-256": "cbeaf669132b440a9f05cbe1f3fadab232adb764011ec25cc82a6410b9d204b1"
+          }
+        },
+        {
+          "location": {
+            "uri": "file:///c:/users/daniel/graphicsprojects/litengine/litengine/common/directxhelper.h"
+          },
+          "hashes": {
+            "sha-256": "aa56c68f90dc29c5400691e1b0901e350dcbe9b7096ff93a8713c73874c2eff0"
+          }
+        }
+      ]
+    }
+  ]
+}

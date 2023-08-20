@@ -30,3 +30,14 @@
 *.exe
 *.out
 *.app
+
+#DX12 ignores
+.vs/
+.vscode/
+bin/
+obj/
+results/
+
+*.sln
+*.vcxproj
+*.vcxproj.user
