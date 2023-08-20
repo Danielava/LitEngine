@@ -41,3 +41,8 @@ results/
 *.sln
 *.vcxproj
 *.vcxproj.user
+
+x64/
+LitEngine/x64/
+LitEngine/Assets/3DModels/
+

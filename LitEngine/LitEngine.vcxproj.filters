@@ -86,9 +86,6 @@
     <AppxManifest Include="Package.appxmanifest" />
   </ItemGroup>
   <ItemGroup>
-    <Text Include="Assets\3DModels\Harmony\Harmony.txt">
-      <Filter>Assets\3DModels</Filter>
-    </Text>
     <Text Include="Harmony.txt" />
   </ItemGroup>
 </Project>
