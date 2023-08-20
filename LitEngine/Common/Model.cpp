@@ -86,7 +86,7 @@ Model::Model(const char* filepath)
 	//fileIn.exceptions(std::ifstream::failbit | std::ifstream::badbit);
 	//string pp = "C:\\Users\\Daniel\\GraphicsProjects\\LitEngine\\LitEngine\\Assets\\3DModels\\Harmony\\Harmony.txt";
 	//string pp = "C:/Users/Daniel/GraphicsProjects/LitEngine/LitEngine/Assets/3DModels/Harmony/Harmony.txt";
-	fileIn.open("Harmony.txt");
+	fileIn.open("Harmony2.txt");
 	//fileIn.open("C:\\Users\\Daniel\\GraphicsProjects\\LitEngine\\LitEngine\\Assets\\3DModels\\Harmony\\Harmony.txt");
 
 	int nrOfVertices = 0;
@@ -102,6 +102,12 @@ Model::Model(const char* filepath)
 		printf("%s ", line.c_str());
 		printf("%d\n", rowNr);
 		*/
+
+		if (rowNr != 0 && line[0] == 'o')
+		{
+			break;
+		}
+
 		if(LineShouldBeSkipped(line))
 		{
 			continue;
@@ -123,6 +129,8 @@ Model::Model(const char* filepath)
 		{
 			nrOfVertices++;
 		}
+
+		rowNr++;
 	}
 
 	//printf("p: %s", current_working_directory().c_str()); //printf is a c thing, not c++, that's why you can't print strings with it. BUT you can write strings if you use c_str();
