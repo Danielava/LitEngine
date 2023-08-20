@@ -92,7 +92,7 @@ Model::Model(const char* filepath)
 	int nrOfVertices = 0;
 	int nrOfNormals = 0;
 	int nrOfUvCoords = 0;
-	int nrOfIndices = 0; //Nr of triangles
+	int nrOfTriangles = 0; //Nr of indices?
 	int rowNr = 0;
 	for (std::string line; std::getline(fileIn, line);)
 	{
@@ -117,7 +117,7 @@ Model::Model(const char* filepath)
 		}
 		else if(line[0] == 'f')
 		{
-			nrOfIndices++;
+			nrOfTriangles++;
 		}
 		else
 		{
@@ -130,11 +130,14 @@ Model::Model(const char* filepath)
 	printf("Nr of vertices: %d\n", nrOfVertices);
 	printf("Nr of normals: %d\n", nrOfNormals);
 	printf("Nr of UV coords: %d\n", nrOfUvCoords);
+	printf("Nr of Triangles: %d\n", nrOfTriangles);
 	m_Vertices.resize(nrOfVertices);// = new vector<DirectX::XMFLOAT3>(10);
 	m_Normals.resize(nrOfNormals);
 	m_UVs.resize(nrOfUvCoords);
 	m_Colors.resize(nrOfVertices); //Temporary since we have no albedo tex
 	m_Indices.resize(1);// m_Indices = new vector<uint32_t>();
+
+	vector<DirectX::XMFLOAT3> m_VertexListTemp(nrOfTriangles*3);
 
 	fileIn.close();
 
@@ -209,8 +212,36 @@ Model::Model(const char* filepath)
 	std::getline(fileIn, line); //s 1
 	std::getline(fileIn, line); //usemtl M_Body
 
-	//Triangle Indices
+	//Triangles (can we create index buffer from this as well?)
+	for (int i = 0; i < nrOfTriangles; i++)
+	{
+		std::string line;
+		std::getline(fileIn, line);
+		while (LineShouldBeSkipped(line))
+		{
+			std::getline(fileIn, line);
+		}
 
+		std::stringstream lineStream = GetModifiedLine(line, ' ');
+		lineStream >> input1; //Throw away the 'f'
+
+		for (int j = 0; j < 3; j++)
+		{
+			std::string indicesString;
+			lineStream >> indicesString;
+
+			std::stringstream indicesLineStream = GetModifiedLine(indicesString, '/');
+
+			std::string vertexIndexString;
+			indicesLineStream >> vertexIndexString;
+			int vertexIndex = stoi(vertexIndexString);
+			m_VertexListTemp[j+i*3] = m_Vertices[vertexIndex-1];
+		}
+	}
+
+	//Temporary dangerous operation!!
+	m_Vertices = m_VertexListTemp;
+	m_Colors = m_Vertices;
 }
 
 //Default constructor creates the dummy cube
