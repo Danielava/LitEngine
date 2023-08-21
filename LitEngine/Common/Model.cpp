@@ -204,8 +204,11 @@ Model::Model(bool x)
 	//fileIn.exceptions(std::ifstream::failbit | std::ifstream::badbit);
 	//string pp = "C:\\Users\\Daniel\\GraphicsProjects\\LitEngine\\LitEngine\\Assets\\3DModels\\Harmony\\Harmony.txt";
 	//string pp = "C:/Users/Daniel/GraphicsProjects/LitEngine/LitEngine/Assets/3DModels/Harmony/Harmony.txt";
-	fileIn.open("Harmony2.txt");
+	//fileIn.open("Harmony2.txt");
 	//fileIn.open("C:\\Users\\Daniel\\GraphicsProjects\\LitEngine\\LitEngine\\Assets\\3DModels\\Harmony\\Harmony.txt");
+
+	//fileIn.open("Harmony2.txt");
+	fileIn.open("Zelda.txt");
 
 	int nrOfVertices = 0;
 	int nrOfNormals = 0;
@@ -319,7 +322,7 @@ void Model::PushBackVertex(string line)
 	lineStream >> input2;
 	lineStream >> input3;
 
-	m_Vertices.push_back(DirectX::XMFLOAT3(stof(input1) * 50.0f, stof(input2) * 50.0f, stof(input3) * 50.0f));
+	m_Vertices.push_back(DirectX::XMFLOAT3(stof(input1), stof(input2), stof(input3)));
 }
 
 void Model::PushBackTriangle(string line)

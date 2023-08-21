@@ -31,6 +31,7 @@ namespace LitEngine
 		DX::StepTimer m_timer;
 
 		Model* m_Glenna3DModel;
+		Model* m_Zelda;
 		Model* m_CubeModel;
 
 		Model* m_CurrentRenderedModel;

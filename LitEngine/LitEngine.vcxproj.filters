@@ -87,5 +87,6 @@
   </ItemGroup>
   <ItemGroup>
     <Text Include="Harmony.txt" />
+    <Text Include="..\Zelda.txt" />
   </ItemGroup>
 </Project>

@@ -92,6 +92,7 @@ void Sample3DSceneRenderer::CreateDeviceDependentResources(Model* model)
         state.VS = CD3DX12_SHADER_BYTECODE(&m_vertexShader[0], m_vertexShader.size());
         state.PS = CD3DX12_SHADER_BYTECODE(&m_pixelShader[0], m_pixelShader.size());
 		state.RasterizerState = CD3DX12_RASTERIZER_DESC(D3D12_DEFAULT);
+		state.RasterizerState.CullMode = D3D12_CULL_MODE_FRONT; //Fixes the vertex winding order being wrong
 		state.BlendState = CD3DX12_BLEND_DESC(D3D12_DEFAULT);
 		state.DepthStencilState = CD3DX12_DEPTH_STENCIL_DESC(D3D12_DEFAULT);
 		state.SampleMask = UINT_MAX;
