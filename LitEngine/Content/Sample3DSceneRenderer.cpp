@@ -512,7 +512,19 @@ bool Sample3DSceneRenderer::Render(Model* model)
 		//m_commandList->IASetIndexBuffer(&m_indexBufferView);
 		//m_commandList->DrawIndexedInstanced(36, 1, 0, 0, 0); //Daniel: I suspect this one! DrawInstancedIndex() will use the index buffer, use DrawInstanced instead
 
-		m_commandList->DrawInstanced((UINT)model->GetNrOfVertices(), 1, 0, 0); //third param = starvertex location
+		int vertexBufferOffset = 0;
+		int nrOfComponents = model->GetNrOfVerticesList().size();
+		vector<int> vertexComponentList = model->GetNrOfVerticesList();
+		for(int i = 0; i < nrOfComponents; i++)
+		{
+			//int totalModelVertices = (UINT)model->GetNrOfVertices();
+			int nrOfVerticesInComponent = vertexComponentList[i]*6; //The startVertex loc needs to be multiplied with 6 because each vertex has 6 floats
+			m_commandList->DrawInstanced((UINT)nrOfVerticesInComponent, 1, (UINT)vertexBufferOffset, 0); //third param = starvertex location
+			vertexBufferOffset += nrOfVerticesInComponent;
+		}
+
+		//To draw the whole model in one go
+		//m_commandList->DrawInstanced((UINT)model->GetNrOfVertices(), 1, 0, 0);
 
 		// Indicate that the render target will now be used to present when the command list is done executing.
 		CD3DX12_RESOURCE_BARRIER presentResourceBarrier =

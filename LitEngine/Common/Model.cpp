@@ -4,6 +4,7 @@
 #include <fstream> //For file reading
 #include <iostream> //For outputting to window for debug purposes
 #include <sstream> // std::stringstream
+#include <functional> //For storing functions in variables e.g std::function<int()> myFunction = [] { return 0; }
 /*
 	Daniel Tutorial:
 	Visual studio won't be able to see any cpp files you add so they won't be part of any compiles.
@@ -215,18 +216,31 @@ Model::Model(bool x)
 	int nrOfUvCoords = 0;
 	int nrOfTriangles = 0; //Nr of indices?
 	int rowNr = 0;
-	int nrOfModelComponenets = 0;
+	int nrOfModelComponenets = -1;
+
+	auto sumListElements = [](vector<int> list)
+	{
+		int sum = 0;
+		for (auto it = list.begin(); it != list.end(); it++)
+		{
+			sum += *it;
+		}
+		return sum;
+	};
+
 	for (std::string line; std::getline(fileIn, line);)
 	{
 		//Daniel: Enable this for debugging as it will only draw one componenet of the mesh
-		/*
 		if (line[0] == 'o')
 		{
+			m_MaterialNames.push_back(line);
+			if(nrOfModelComponenets >= 0)
+			{
+				m_NrOfVerticesPerComponent.push_back(0);
+				m_NrOfVerticesPerComponent[nrOfModelComponenets] = nrOfVertices - sumListElements(m_NrOfVerticesPerComponent);
+			}
 			nrOfModelComponenets++;
-			if (nrOfModelComponenets >= 2)
-				break;
 		}
-		*/
 
 		if (LineShouldBeSkipped(line))
 		{
@@ -254,6 +268,10 @@ Model::Model(bool x)
 			nrOfVertices++;
 		}
 	}
+
+	//We need to register the last component vertices right here
+	m_NrOfVerticesPerComponent.push_back(0);
+	m_NrOfVerticesPerComponent[nrOfModelComponenets] = nrOfVertices - sumListElements(m_NrOfVerticesPerComponent);
 
 	//printf("p: %s", current_working_directory().c_str()); //printf is a c thing, not c++, that's why you can't print strings with it. BUT you can write strings if you use c_str();
 	//Gives the following path: C:\Users\Daniel\GraphicsProjects\LitEngine\x64\Debug\LitEngine\AppX
