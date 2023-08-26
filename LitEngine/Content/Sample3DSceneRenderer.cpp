@@ -513,7 +513,7 @@ bool Sample3DSceneRenderer::Render(Model* model)
 		//m_commandList->DrawIndexedInstanced(36, 1, 0, 0, 0); //Daniel: I suspect this one! DrawInstancedIndex() will use the index buffer, use DrawInstanced instead
 
 		int vertexBufferOffset = 0;
-		int nrOfComponents = model->GetNrOfVerticesList().size();
+		int nrOfComponents = (int)model->GetNrOfVerticesList().size();
 		vector<int> vertexComponentList = model->GetNrOfVerticesList();
 		for(int i = 0; i < nrOfComponents; i++)
 		{

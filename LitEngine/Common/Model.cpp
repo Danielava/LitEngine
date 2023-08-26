@@ -5,6 +5,7 @@
 #include <iostream> //For outputting to window for debug purposes
 #include <sstream> // std::stringstream
 #include <functional> //For storing functions in variables e.g std::function<int()> myFunction = [] { return 0; }
+
 /*
 	Daniel Tutorial:
 	Visual studio won't be able to see any cpp files you add so they won't be part of any compiles.
@@ -208,8 +209,8 @@ Model::Model(bool x)
 	//fileIn.open("Harmony2.txt");
 	//fileIn.open("C:\\Users\\Daniel\\GraphicsProjects\\LitEngine\\LitEngine\\Assets\\3DModels\\Harmony\\Harmony.txt");
 
-	//fileIn.open("Harmony2.txt");
-	fileIn.open("Zelda.txt");
+	fileIn.open("Harmony2.txt");
+	//fileIn.open("Zelda.txt");
 
 	int nrOfVertices = 0;
 	int nrOfNormals = 0;
@@ -325,6 +326,9 @@ Model::Model(bool x)
 		//color = DirectX::XMVectorSqrt(color);
 		DirectX::XMStoreFloat3(&m_Colors[i], color); //Need to convert it into xmvector3 before being able to sqrt it!
 	}
+
+	//Open textures
+
 }
 
 void Model::PushBackVertex(string line)
@@ -340,7 +344,8 @@ void Model::PushBackVertex(string line)
 	lineStream >> input2;
 	lineStream >> input3;
 
-	m_Vertices.push_back(DirectX::XMFLOAT3(stof(input1), stof(input2), stof(input3)));
+	m_Vertices.push_back(DirectX::XMFLOAT3(stof(input1) * 50.0f, stof(input2) * 50.0f, stof(input3) * 50.0f));
+	//m_Vertices.push_back(DirectX::XMFLOAT3(stof(input1), stof(input2), stof(input3)));
 }
 
 void Model::PushBackTriangle(string line)
@@ -482,4 +487,38 @@ void Model::ProcessModelTriangles(ifstream* fileIn, int nrOfTriangles)
 			m_VertexListTemp[j + i * 3] = m_Vertices[vertexIndex - 1]; //Here we're basically picking from our vertex list and adding the according to how the 'f' tells us they should be sorted
 		}
 	}
+}
+
+static void StringToWString(std::wstring& ws, const std::string& s)
+{
+	std::wstring wsTmp(s.begin(), s.end());
+	ws = wsTmp;
+}
+
+//Using DirectXTex to load images into DX12 format. Tutorial: https://www.3dgep.com/learning-directx-12-4/
+void Model::LoadTextureFromFile(string filepath)
+{
+	std::lock_guard<std::mutex> lock(ms_TextureCacheMutex); //Note, we don't have a texture cache yet so this is useless!
+	
+	DirectX::TexMetadata metadata;
+	DirectX::ScratchImage* scratchImage = new DirectX::ScratchImage();
+	
+	{
+		std::wstring path;
+		StringToWString(path, filepath);
+		const wchar_t* wpath = path.c_str();
+		HRESULT hr = LoadFromWICFile(wpath, DirectX::WIC_FLAGS_FORCE_RGB, &metadata, *scratchImage, nullptr);
+
+		//DirectX::LoadFromTGAFile(wpath, &metadata, *scratchImage);
+
+		if (FAILED(hr))
+		{
+			// Clean up for partial success before here
+			//return hr; // Must keep passing the error code back all the way to the main loop
+			assert("Texture creation failed!");
+		}
+
+		//hr = CreateShaderResourceView(mD3DSystem->GetDevice11(), image->GetImages(), image->GetImageCount(), imageMetadata, srv);
+	}
+
 }

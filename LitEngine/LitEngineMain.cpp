@@ -48,11 +48,11 @@ void LitEngineMain::CreateRenderers(const std::shared_ptr<DX::DeviceResources>& 
 
 	//Daniel: TODO: Create the 3D model here!
 	const char glennaFilepath[255] = "../Assets/3DModels/Harmony/Harmony.txt";
-	//m_Glenna3DModel = new Model(true);
-	m_Zelda = new Model(true);
+	m_Glenna3DModel = new Model(true);
+	//m_Zelda = new Model(true);
 	//m_CubeModel = new Model();
 
-	m_sceneRenderer = std::unique_ptr<Sample3DSceneRenderer>(new Sample3DSceneRenderer(deviceResources, m_Zelda));
+	m_sceneRenderer = std::unique_ptr<Sample3DSceneRenderer>(new Sample3DSceneRenderer(deviceResources, m_Glenna3DModel));
 
 	OnWindowSizeChanged();
 }
@@ -80,7 +80,7 @@ bool LitEngineMain::Render()
 
 	// Render the scene objects.
 	// TODO: Replace this with your app's content rendering functions.
-	return m_sceneRenderer->Render(m_Zelda);
+	return m_sceneRenderer->Render(m_Glenna3DModel);
 }
 
 // Updates application state when the window's size changes (e.g. device orientation change)

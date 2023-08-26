@@ -4,12 +4,26 @@
 
 #include <vector>
 #include <string> //getline
+#include <mutex> //lock_guard, mutex
+#include <algorithm>
+#include <DirectXTex.h>
+//#include <DirectXTex/DirectXTexWic.cpp> //For LoadFromWICFile
+//Guide on how to add new library to your project (you have to add the vcproj solution to your sol by rightclicking in the sol explorer) 
+//See "Using project-to-project references": https://github.com/microsoft/DirectXTex/wiki/DirectXTex
+
+//THIS FIXED THE IMPORTING DirectXTex library and linking it: https://directxtex2.rssing.com/chan-6426152/all_p34.html
+/*
+	In your application's project, right-click on the Project and use "References...", then "Add New Reference...", and then check the DirectXTex project name and click OK. For a Windows Store app, you need to set Reference Assembly Output to false since DirectXTex is a static C++ library and not a WinRT component.
+
+	In your application's project settings, on the "C++ / General" page set Configuration to "All Configurations", set Platform to "All Platforms", and then add the relative path to DirectXTex; to the Additional Include Directories properties. Click Apply.
+*/
 
 using namespace std;
 
 class Model
 {
 public:
+
 	Model();
 	Model(bool x);
 	Model(const char* filepath);
@@ -26,6 +40,15 @@ public:
 	vector<DirectX::XMFLOAT3> m_VertexListTemp;
 
 	vector<DirectX::XMUINT3> m_Indices;
+
+	struct ModelComponentTextures
+	{
+		ID3D12Resource* m_AlbedoTex;
+		ID3D12Resource* m_NormalTex;
+		ID3D12Resource* m_MaterialTex;
+	};
+
+	vector<ModelComponentTextures> m_Textures;
 
 
 	//The latest and greatest: Support for multiple components in 1 model
@@ -53,6 +76,10 @@ private:
 
 	void PushBackVertex(string line);
 	void PushBackTriangle(string line);
+
+
+	std::mutex ms_TextureCacheMutex; //To make sure only one thread accesses the texture cache at one time.
+	void LoadTextureFromFile(string filepath);
 };
 
 //#endif

@@ -81,6 +81,7 @@
     <ClInclude Include="Common\Model.h">
       <Filter>Common</Filter>
     </ClInclude>
+    <ClInclude Include="resource.h" />
   </ItemGroup>
   <ItemGroup>
     <AppxManifest Include="Package.appxmanifest" />
@@ -88,5 +89,8 @@
   <ItemGroup>
     <Text Include="Harmony.txt" />
     <Text Include="..\Zelda.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="LitEngine.rc" />
   </ItemGroup>
 </Project>
