@@ -65,6 +65,9 @@
     <Filter Include="Assets\3DModels">
       <UniqueIdentifier>{938317d9-7a62-43a0-b7c9-6e0fb70e1b06}</UniqueIdentifier>
     </Filter>
+    <Filter Include="3DModels">
+      <UniqueIdentifier>{ef73e209-11e2-485b-b123-d9f3ead125b8}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="App.cpp" />
@@ -92,5 +95,85 @@
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="LitEngine.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="3DModels\m_body_ao.png">
+      <Filter>3DModels</Filter>
+    </Image>
+    <Image Include="3DModels\m_body_nrm.png">
+      <Filter>3DModels</Filter>
+    </Image>
+    <Image Include="3DModels\m_body_rgh.png">
+      <Filter>3DModels</Filter>
+    </Image>
+    <Image Include="3DModels\m_cap_alb.png">
+      <Filter>3DModels</Filter>
+    </Image>
+    <Image Include="3DModels\m_cap_ao.png">
+      <Filter>3DModels</Filter>
+    </Image>
+    <Image Include="3DModels\m_cap_fxm.png">
+      <Filter>3DModels</Filter>
+    </Image>
+    <Image Include="3DModels\m_cap_mtl.png">
+      <Filter>3DModels</Filter>
+    </Image>
+    <Image Include="3DModels\m_cap_nrm.png">
+      <Filter>3DModels</Filter>
+    </Image>
+    <Image Include="3DModels\m_cap_rgh.png">
+      <Filter>3DModels</Filter>
+    </Image>
+    <Image Include="3DModels\m_clothes_alb.png">
+      <Filter>3DModels</Filter>
+    </Image>
+    <Image Include="3DModels\m_clothes_ao.png">
+      <Filter>3DModels</Filter>
+    </Image>
+    <Image Include="3DModels\m_clothes_emm.png">
+      <Filter>3DModels</Filter>
+    </Image>
+    <Image Include="3DModels\m_clothes_nrm.png">
+      <Filter>3DModels</Filter>
+    </Image>
+    <Image Include="3DModels\m_clothes_rgh.png">
+      <Filter>3DModels</Filter>
+    </Image>
+    <Image Include="3DModels\m_eye_alb.png">
+      <Filter>3DModels</Filter>
+    </Image>
+    <Image Include="3DModels\m_eye_nrm.png">
+      <Filter>3DModels</Filter>
+    </Image>
+    <Image Include="3DModels\m_eyeshadow_alb.png">
+      <Filter>3DModels</Filter>
+    </Image>
+    <Image Include="3DModels\m_fish_alb.png">
+      <Filter>3DModels</Filter>
+    </Image>
+    <Image Include="3DModels\m_fish_nrm.png">
+      <Filter>3DModels</Filter>
+    </Image>
+    <Image Include="3DModels\m_fish_rgh.png">
+      <Filter>3DModels</Filter>
+    </Image>
+    <Image Include="3DModels\m_hair_alb.png">
+      <Filter>3DModels</Filter>
+    </Image>
+    <Image Include="3DModels\m_hair_ao.png">
+      <Filter>3DModels</Filter>
+    </Image>
+    <Image Include="3DModels\m_hair_fxm.png">
+      <Filter>3DModels</Filter>
+    </Image>
+    <Image Include="3DModels\m_hair_nrm.png">
+      <Filter>3DModels</Filter>
+    </Image>
+    <Image Include="3DModels\m_hair_rgh.png">
+      <Filter>3DModels</Filter>
+    </Image>
+    <Image Include="3DModels\m_body_alb.png">
+      <Filter>3DModels</Filter>
+    </Image>
   </ItemGroup>
 </Project>

@@ -328,7 +328,13 @@ Model::Model(bool x)
 	}
 
 	//Open textures
+	//TODO: You need to loop here and open all textures stored in m_Materials.
 
+	string filepath = "3DModels/m_body_alb.png"; //WORKED!!
+	LoadTextureFromFile(filepath);
+
+	//filepath = "3DModels\\m_body_alb.png"; //Also WORKED!!
+	//LoadTextureFromFile(filepath);
 }
 
 void Model::PushBackVertex(string line)
@@ -516,6 +522,10 @@ void Model::LoadTextureFromFile(string filepath)
 			// Clean up for partial success before here
 			//return hr; // Must keep passing the error code back all the way to the main loop
 			assert("Texture creation failed!");
+		}
+		else
+		{
+			assert("Hit em up!!");
 		}
 
 		//hr = CreateShaderResourceView(mD3DSystem->GetDevice11(), image->GetImages(), image->GetImageCount(), imageMetadata, srv);
