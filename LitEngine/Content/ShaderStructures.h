@@ -15,5 +15,6 @@ namespace LitEngine
 	{
 		DirectX::XMFLOAT3 pos;
 		DirectX::XMFLOAT3 color;
+		DirectX::XMFLOAT2 uv;
 	};
 }

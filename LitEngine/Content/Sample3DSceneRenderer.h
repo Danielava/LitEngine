@@ -24,6 +24,8 @@ namespace LitEngine
 		void StopTracking();
 		bool IsTracking() { return m_tracking; }
 
+		void CreateShaderResources(const std::shared_ptr<DX::DeviceResources>& deviceResources, Model* model);
+
 	private:
 		void LoadState();
 		void Rotate(float radians);

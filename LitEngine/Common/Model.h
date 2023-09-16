@@ -2,6 +2,9 @@
 //#ifndef MODEL_H //Same as #pragma once
 //#define MODEL_H
 
+#include "..\Common\DeviceResources.h" //DX:: namespace
+#include "DirectXHelper.h" //ThrowIfFailed()
+
 #include <vector>
 #include <string> //getline
 #include <mutex> //lock_guard, mutex
@@ -25,7 +28,7 @@ class Model
 public:
 
 	Model();
-	Model(bool x);
+	Model(const std::shared_ptr<DX::DeviceResources>& deviceResources, bool x);
 	Model(const char* filepath);
 	~Model() {}
 
@@ -41,13 +44,27 @@ public:
 
 	vector<DirectX::XMUINT3> m_Indices;
 
+	struct TextureInfo
+	{
+		ID3D12Resource* m_AlbedoTex;
+
+		UINT imageSize;
+		UINT RowPitch; //Texture Pitch which is stored in here, is the width of the texture times the size of a single pixel in bytes.
+		UINT SlicePitch; //
+	};
+
 	struct ModelComponentTextures
 	{
 		ID3D12Resource* m_AlbedoTex;
 		ID3D12Resource* m_NormalTex;
 		ID3D12Resource* m_MaterialTex;
+		
+		TextureInfo m_AlbedoTexInfo;
+		TextureInfo m_NormalTexInfo;
+		TextureInfo m_MaterialTexInfo;
 	};
 
+	ID3D12Resource* m_TextureBufferUploadHeap;
 	vector<ModelComponentTextures> m_Textures;
 
 
@@ -76,10 +93,11 @@ private:
 
 	void PushBackVertex(string line);
 	void PushBackTriangle(string line);
+	void PushBackUVs(string line);
 
 
 	std::mutex ms_TextureCacheMutex; //To make sure only one thread accesses the texture cache at one time.
-	void LoadTextureFromFile(string filepath);
+	void LoadTextureFromFile(const std::shared_ptr<DX::DeviceResources>& deviceResources, string filepath);
 };
 
 //#endif

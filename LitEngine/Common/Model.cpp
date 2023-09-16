@@ -34,6 +34,45 @@
 
 #include <direct.h> // _getcwd
 
+// get the number of bits per pixel for a dxgi format
+	// Taken from https://github.com/microsoft/Windows-Machine-Learning/blob/master/Samples/WinMLSamplesGallery/WinMLSamplesGalleryNative/D3D12Quad.cpp
+static int GetDXGIFormatBitsPerPixel(DXGI_FORMAT dxgiFormat)
+{
+	switch (dxgiFormat) {
+	case DXGI_FORMAT_R32G32B32A32_FLOAT:
+		return 128;
+	case DXGI_FORMAT_R16G16B16A16_FLOAT:
+		return 64;
+	case DXGI_FORMAT_R16G16B16A16_UNORM:
+		return 64;
+	case DXGI_FORMAT_R8G8B8A8_UNORM:
+		return 32;
+	case DXGI_FORMAT_B8G8R8A8_UNORM:
+		return 32;
+	case DXGI_FORMAT_B8G8R8X8_UNORM:
+		return 32;
+	case DXGI_FORMAT_R10G10B10_XR_BIAS_A2_UNORM:
+		return 32;
+	case DXGI_FORMAT_R10G10B10A2_UNORM:
+		return 32;
+	case DXGI_FORMAT_B5G5R5A1_UNORM:
+		return 16;
+	case DXGI_FORMAT_B5G6R5_UNORM:
+		return 16;
+	case DXGI_FORMAT_R32_FLOAT:
+		return 32;
+	case DXGI_FORMAT_R16_FLOAT:
+		return 16;
+	case DXGI_FORMAT_R16_UNORM:
+		return 16;
+	case DXGI_FORMAT_R8_UNORM:
+		return 8;
+	case DXGI_FORMAT_A8_UNORM:
+		return 8;
+	}
+	return 0;
+}
+
 std::string current_working_directory()
 {
 	char* cwd = _getcwd(0, 0); // **** microsoft specific ****, Gets current path, we need the path to know which filepath our txt will exist in.
@@ -200,7 +239,7 @@ Model::Model()
 
 	That will be indicated by the letter o.
 */
-Model::Model(bool x)
+Model::Model(const std::shared_ptr<DX::DeviceResources>& deviceResources, bool x)
 {
 	ifstream fileIn;
 	//fileIn.exceptions(std::ifstream::failbit | std::ifstream::badbit);
@@ -257,6 +296,7 @@ Model::Model(bool x)
 		else if (line[1] == 't')
 		{
 			nrOfUvCoords++;
+			PushBackUVs(line);
 		}
 		else if (line[0] == 'f')
 		{
@@ -296,12 +336,19 @@ Model::Model(bool x)
 	m_Indices.resize(1);// m_Indices = new vector<uint32_t>();
 	*/
 	m_VertexListTemp.resize(nrOfTriangles * 3);
+	vector<DirectX::XMFLOAT2> m_UVListTemp;
+	m_UVListTemp.resize(nrOfTriangles * 3);
 
 	fileIn.close();
 
 	for (int i = 0; i < m_Indices.size(); i++)
 	{
 		m_VertexListTemp[i] = m_Vertices[m_Indices[i].x-1]; //DANIEL: REMEMBER the -1 here it's very important!! It's not 0 indexed.. (smh)
+
+		if(!(m_Indices[i].z-1>= m_UVs.size())) //Temporary hack...
+		{
+			m_UVListTemp[i] = m_UVs[m_Indices[i].z - 1]; //Something is wrong here... m_UVs seem to be missing uvs?
+		}
 	}
 
 	//We iterate one more time to feed our vertex & color buffer
@@ -315,6 +362,7 @@ Model::Model(bool x)
 	*/
 	//Temporary dangerous operation!!
 	m_Vertices = m_VertexListTemp;
+	m_UVs = m_UVListTemp;
 	m_Colors = m_Vertices;
 
 	for (int i = 0; i < m_Colors.size(); i++)
@@ -330,8 +378,12 @@ Model::Model(bool x)
 	//Open textures
 	//TODO: You need to loop here and open all textures stored in m_Materials.
 
-	string filepath = "3DModels/m_body_alb.png"; //WORKED!!
-	LoadTextureFromFile(filepath);
+	//string filepath = "3DModels/m_body_alb.png"; //WORKED!!
+	//string filepath = "3DModels/m_cap_alb.png";
+	//string filepath = "3DModels/m_clothes_alb.png";
+	//string filepath = "3DModels/m_clothes_nrm.png";
+	string filepath = "3DModels/m_cap_ao.png";
+	LoadTextureFromFile(deviceResources, filepath);
 
 	//filepath = "3DModels\\m_body_alb.png"; //Also WORKED!!
 	//LoadTextureFromFile(filepath);
@@ -354,6 +406,22 @@ void Model::PushBackVertex(string line)
 	//m_Vertices.push_back(DirectX::XMFLOAT3(stof(input1), stof(input2), stof(input3)));
 }
 
+void Model::PushBackUVs(string line)
+{
+	string input1;
+	string input2;
+	string input3;
+
+	std::stringstream lineStream = GetModifiedLine(line, ' ');
+
+	lineStream >> input1; //First will be trash (the v, vn, vt etc)
+	lineStream >> input1;
+	lineStream >> input2;
+
+	m_UVs.push_back(DirectX::XMFLOAT2(stof(input1), stof(input2)));
+	//m_Vertices.push_back(DirectX::XMFLOAT3(stof(input1), stof(input2), stof(input3)));
+}
+
 void Model::PushBackTriangle(string line)
 {
 	string index1;
@@ -370,9 +438,9 @@ void Model::PushBackTriangle(string line)
 
 		std::stringstream indicesLineStream = GetModifiedLine(indicesString, '/');
 
-		indicesLineStream >> index1;
-		indicesLineStream >> index2;
-		indicesLineStream >> index3;
+		indicesLineStream >> index1; //vertexIdx
+		indicesLineStream >> index2; //NormalIdx
+		indicesLineStream >> index3; //Uv idx??
 		m_Indices.push_back(DirectX::XMUINT3(stoi(index1), stoi(index2), stoi(index3))); //First index1 is the vertex index, 2 is normal index etc
 	}
 }
@@ -502,7 +570,7 @@ static void StringToWString(std::wstring& ws, const std::string& s)
 }
 
 //Using DirectXTex to load images into DX12 format. Tutorial: https://www.3dgep.com/learning-directx-12-4/
-void Model::LoadTextureFromFile(string filepath)
+void Model::LoadTextureFromFile(const std::shared_ptr<DX::DeviceResources>& deviceResources, string filepath)
 {
 	std::lock_guard<std::mutex> lock(ms_TextureCacheMutex); //Note, we don't have a texture cache yet so this is useless!
 	
@@ -523,12 +591,95 @@ void Model::LoadTextureFromFile(string filepath)
 			//return hr; // Must keep passing the error code back all the way to the main loop
 			assert("Texture creation failed!");
 		}
-		else
-		{
-			assert("Hit em up!!");
-		}
 
 		//hr = CreateShaderResourceView(mD3DSystem->GetDevice11(), image->GetImages(), image->GetImageCount(), imageMetadata, srv);
-	}
 
+		//Great resource on how to create Texture (ID3D12Resource) object https://alextardif.com/D3D11To12P3.html
+
+		bool is3DTexture = metadata.dimension == DirectX::TEX_DIMENSION_TEXTURE3D;
+		D3D12_RESOURCE_DESC textureDesc{};
+		textureDesc.Format = metadata.format;
+		textureDesc.Width = (uint32)metadata.width;
+		textureDesc.Height = (uint32)metadata.height;
+		textureDesc.Flags = D3D12_RESOURCE_FLAG_NONE;
+		textureDesc.DepthOrArraySize = is3DTexture ? (uint16)metadata.depth : (uint16)metadata.arraySize;
+		textureDesc.MipLevels = (uint16)metadata.mipLevels;
+		textureDesc.SampleDesc.Count = 1;
+		textureDesc.SampleDesc.Quality = 0;
+		textureDesc.Dimension = is3DTexture ? D3D12_RESOURCE_DIMENSION_TEXTURE3D : D3D12_RESOURCE_DIMENSION_TEXTURE2D;
+		textureDesc.Layout = D3D12_TEXTURE_LAYOUT_UNKNOWN;
+		textureDesc.Alignment = 0;
+
+		D3D12_HEAP_PROPERTIES defaultProperties;
+		defaultProperties.Type = D3D12_HEAP_TYPE_DEFAULT;
+		defaultProperties.CPUPageProperty = D3D12_CPU_PAGE_PROPERTY_UNKNOWN;
+		defaultProperties.MemoryPoolPreference = D3D12_MEMORY_POOL_UNKNOWN;
+		defaultProperties.CreationNodeMask = 0;
+		defaultProperties.VisibleNodeMask = 0;
+
+		ID3D12Resource* newTextureResource = NULL;
+		
+		//CreateCommittedResource(&defaultProperties, D3D12_HEAP_FLAG_NONE, &textureDesc,
+		//	D3D12_RESOURCE_STATE_COPY_DEST, NULL, IID_PPV_ARGS(&newTextureResource));
+
+		/*
+			Daniel very important: The reason this texture was black is because it has no content in it.
+			This is simply allocating some data in video memory (the default heap), we must now upload
+			our IMAGE DATA to this heap.
+		*/
+
+		DX::ThrowIfFailed(deviceResources->GetD3DDevice()->CreateCommittedResource(
+			&defaultProperties,
+			D3D12_HEAP_FLAG_NONE,
+			&textureDesc,
+			D3D12_RESOURCE_STATE_COPY_DEST, //It starts of as a Copy dest since we want to upload/copy data to this with the upload heap! Later, this must be Barrier'd into a pixel resource
+			NULL, //Used for RT and DS/Stencil buffers
+			IID_PPV_ARGS(&newTextureResource)
+		));
+
+
+		//TUTORIAL: Upload heap https://www.braynzarsoft.net/viewtutorial/q16390-directx-12-textures-from-file
+		//Upload heap, upload the image data to our newTextureResource
+		{
+			UINT64 textureUploadBufferSize = 0;
+			// this function gets the size an upload buffer needs to be to upload a texture to the gpu.
+			// each row must be 256 byte aligned except for the last row, which can just be the size in bytes of the row
+			// eg. textureUploadBufferSize = ((((width * numBytesPerPixel) + 255) & ~255) * (height - 1)) + (width * numBytesPerPixel);
+			//textureUploadBufferSize = (((imageBytesPerRow + 255) & ~255) * (textureDesc.Height - 1)) + imageBytesPerRow;
+			deviceResources->GetD3DDevice()->GetCopyableFootprints(&textureDesc, 0, 1, 0, nullptr, nullptr, nullptr, &textureUploadBufferSize);
+
+			// now we create an upload heap to upload our texture to the GPU
+			hr = deviceResources->GetD3DDevice()->CreateCommittedResource(
+				&CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_UPLOAD), // upload heap
+				D3D12_HEAP_FLAG_NONE, // no flags
+				&CD3DX12_RESOURCE_DESC::Buffer(textureUploadBufferSize), // resource description for a buffer (storing the image data in this heap just to copy to the default heap)
+				D3D12_RESOURCE_STATE_GENERIC_READ, // We will copy the contents from this heap to the default heap above
+				nullptr,
+				IID_PPV_ARGS(&m_TextureBufferUploadHeap));
+			if (FAILED(hr))
+			{
+				//TODO: Som error message
+			}
+		}
+
+		//Now we have a default heap that the pixel shader can read from (video memory data), we use the upload heap to upload the tex data to the default heap.
+		//OBS: I decided to do this in Sample3DSceneRenderer.cpp because we don't have access to the commandList here atm..
+		//But we will store some data here for the Sample3DSceneRenderer.cpp to use
+
+		ModelComponentTextures textures;
+
+		textures.m_AlbedoTex = newTextureResource;
+		textures.m_NormalTex = nullptr;
+		textures.m_MaterialTex = nullptr;
+
+		int bitsPerPixel = GetDXGIFormatBitsPerPixel(metadata.format); // number of bits per pixel
+		int bytesPerRow = ((uint32)metadata.width * bitsPerPixel) / 8; // number of bytes in each row of the image data
+		int imageSize = bytesPerRow * (uint32)metadata.height; // total image size in bytes
+
+		textures.m_AlbedoTexInfo.imageSize = imageSize;
+		textures.m_AlbedoTexInfo.RowPitch = 0; //((uint32)metadata.width * bitsPerPixel);//(uint32)metadata.width* bitsPerPixel;// (uint32)metadata.width * bitsPerPixel;
+		textures.m_AlbedoTexInfo.SlicePitch = 0;// textures.m_AlbedoTexInfo.RowPitch* (uint32)metadata.height;
+
+		m_Textures.push_back(textures);
+	}
 }

@@ -48,11 +48,17 @@ void LitEngineMain::CreateRenderers(const std::shared_ptr<DX::DeviceResources>& 
 
 	//Daniel: TODO: Create the 3D model here!
 	const char glennaFilepath[255] = "../Assets/3DModels/Harmony/Harmony.txt";
-	m_Glenna3DModel = new Model(true);
+	m_Glenna3DModel = new Model(deviceResources, true);
 	//m_Zelda = new Model(true);
 	//m_CubeModel = new Model();
 
+	/*
+		Daniel: You will need to reword this a little bit later.
+		This "new Sample3DSceneRenderer()" constructor should be called without the 3D model as input, create the descr heap etc
+		and then immidiately after you should call some m_sceneRenderer function with your models as input and create the SRV's etc.
+	*/
 	m_sceneRenderer = std::unique_ptr<Sample3DSceneRenderer>(new Sample3DSceneRenderer(deviceResources, m_Glenna3DModel));
+	//m_sceneRenderer->CreateShaderResources(deviceResources, m_Glenna3DModel);
 
 	OnWindowSizeChanged();
 }
