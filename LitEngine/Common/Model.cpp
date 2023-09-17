@@ -173,6 +173,7 @@ Model::Model(const char* filepath)
 	printf("Nr of normals: %d\n", nrOfNormals);
 	printf("Nr of UV coords: %d\n", nrOfUvCoords);
 	printf("Nr of Triangles: %d\n", nrOfTriangles);
+	printf("Nr of Rows: %d\n", rowNr);
 	m_Vertices.resize(nrOfVertices);// = new vector<DirectX::XMFLOAT3>(10);
 	m_Normals.resize(nrOfNormals);
 	m_UVs.resize(nrOfUvCoords);
@@ -258,7 +259,7 @@ Model::Model(const std::shared_ptr<DX::DeviceResources>& deviceResources, bool x
 	int rowNr = 0;
 	int nrOfModelComponenets = -1;
 
-	auto sumListElements = [](vector<int> list)
+	auto sumListElements = [](vector<int> list) //Helper function
 	{
 		int sum = 0;
 		for (auto it = list.begin(); it != list.end(); it++)
@@ -270,7 +271,8 @@ Model::Model(const std::shared_ptr<DX::DeviceResources>& deviceResources, bool x
 
 	for (std::string line; std::getline(fileIn, line);)
 	{
-		//Daniel: Enable this for debugging as it will only draw one componenet of the mesh
+		rowNr++;
+
 		if (line[0] == 'o')
 		{
 			m_MaterialNames.push_back(line);
@@ -287,11 +289,10 @@ Model::Model(const std::shared_ptr<DX::DeviceResources>& deviceResources, bool x
 			continue;
 		}
 
-		rowNr++;
-
 		if (line[1] == 'n')
 		{
 			nrOfNormals++;
+			PushBackNormal(line);
 		}
 		else if (line[1] == 't')
 		{
@@ -311,8 +312,11 @@ Model::Model(const std::shared_ptr<DX::DeviceResources>& deviceResources, bool x
 	}
 
 	//We need to register the last component vertices right here
-	m_NrOfVerticesPerComponent.push_back(0);
-	m_NrOfVerticesPerComponent[nrOfModelComponenets] = nrOfVertices - sumListElements(m_NrOfVerticesPerComponent);
+	if(nrOfModelComponenets > 0)
+	{
+		m_NrOfVerticesPerComponent.push_back(0);
+		m_NrOfVerticesPerComponent[nrOfModelComponenets] = nrOfVertices - sumListElements(m_NrOfVerticesPerComponent);
+	}
 
 	//printf("p: %s", current_working_directory().c_str()); //printf is a c thing, not c++, that's why you can't print strings with it. BUT you can write strings if you use c_str();
 	//Gives the following path: C:\Users\Daniel\GraphicsProjects\LitEngine\x64\Debug\LitEngine\AppX
@@ -320,35 +324,23 @@ Model::Model(const std::shared_ptr<DX::DeviceResources>& deviceResources, bool x
 	printf("Nr of normals: %d\n", nrOfNormals);
 	printf("Nr of UV coords: %d\n", nrOfUvCoords);
 	printf("Nr of Triangles: %d\n", nrOfTriangles);
+	printf("Nr of Rows: %d\n", rowNr);
 
-	/*
-		Nr of vertices: 815
-		Nr of normals: 409
-		Nr of UV coords: 377
-		Nr of Triangles: 712
-	*/
-
-	/*
-	m_Vertices.resize(nrOfVertices);// = new vector<DirectX::XMFLOAT3>(10);
-	m_Normals.resize(nrOfNormals);
-	m_UVs.resize(nrOfUvCoords);
-	m_Colors.resize(nrOfVertices); //Temporary since we have no albedo tex
-	m_Indices.resize(1);// m_Indices = new vector<uint32_t>();
-	*/
 	m_VertexListTemp.resize(nrOfTriangles * 3);
+	
 	vector<DirectX::XMFLOAT2> m_UVListTemp;
 	m_UVListTemp.resize(nrOfTriangles * 3);
+	
+	vector<DirectX::XMFLOAT3> m_NormalListTemp;
+	m_NormalListTemp.resize(nrOfTriangles * 3);
 
 	fileIn.close();
 
 	for (int i = 0; i < m_Indices.size(); i++)
 	{
 		m_VertexListTemp[i] = m_Vertices[m_Indices[i].x-1]; //DANIEL: REMEMBER the -1 here it's very important!! It's not 0 indexed.. (smh)
-
-		if(!(m_Indices[i].z-1>= m_UVs.size())) //Temporary hack...
-		{
-			m_UVListTemp[i] = m_UVs[m_Indices[i].z - 1]; //Something is wrong here... m_UVs seem to be missing uvs?
-		}
+		m_UVListTemp[i] = m_UVs[m_Indices[i].y - 1]; //Something is wrong here... m_UVs seem to be missing uvs? OMG.. seems like the middle elem (y) is uv...
+		m_NormalListTemp[i] = m_Normals[m_Indices[i].z - 1];
 	}
 
 	//We iterate one more time to feed our vertex & color buffer
@@ -363,26 +355,17 @@ Model::Model(const std::shared_ptr<DX::DeviceResources>& deviceResources, bool x
 	//Temporary dangerous operation!!
 	m_Vertices = m_VertexListTemp;
 	m_UVs = m_UVListTemp;
-	m_Colors = m_Vertices;
-
-	for (int i = 0; i < m_Colors.size(); i++)
-	{
-		DirectX::XMVECTOR color = DirectX::XMLoadFloat3(&m_Colors[i]);
-		color = DirectX::XMVectorAbs(color);
-		color = DirectX::XMVectorSqrt(color);
-		//color = DirectX::XMVectorSqrt(color);
-		//color = DirectX::XMVectorSqrt(color);
-		DirectX::XMStoreFloat3(&m_Colors[i], color); //Need to convert it into xmvector3 before being able to sqrt it!
-	}
+	m_Normals = m_NormalListTemp;
 
 	//Open textures
 	//TODO: You need to loop here and open all textures stored in m_Materials.
 
 	//string filepath = "3DModels/m_body_alb.png"; //WORKED!!
 	//string filepath = "3DModels/m_cap_alb.png";
-	//string filepath = "3DModels/m_clothes_alb.png";
+	string filepath = "3DModels/m_clothes_alb.png";
 	//string filepath = "3DModels/m_clothes_nrm.png";
-	string filepath = "3DModels/m_cap_ao.png";
+	//string filepath = "3DModels/m_cap_ao.png";
+	//string filepath = "3DModels/m_hair_alb.png";
 	LoadTextureFromFile(deviceResources, filepath);
 
 	//filepath = "3DModels\\m_body_alb.png"; //Also WORKED!!
@@ -406,6 +389,22 @@ void Model::PushBackVertex(string line)
 	//m_Vertices.push_back(DirectX::XMFLOAT3(stof(input1), stof(input2), stof(input3)));
 }
 
+void Model::PushBackNormal(string line)
+{
+	string input1;
+	string input2;
+	string input3;
+
+	std::stringstream lineStream = GetModifiedLine(line, ' ');
+
+	lineStream >> input1; //First will be trash (the v, vn, vt etc)
+	lineStream >> input1;
+	lineStream >> input2;
+	lineStream >> input3;
+
+	m_Normals.push_back(DirectX::XMFLOAT3(stof(input1), stof(input2), stof(input3)));
+}
+
 void Model::PushBackUVs(string line)
 {
 	string input1;
@@ -418,8 +417,7 @@ void Model::PushBackUVs(string line)
 	lineStream >> input1;
 	lineStream >> input2;
 
-	m_UVs.push_back(DirectX::XMFLOAT2(stof(input1), stof(input2)));
-	//m_Vertices.push_back(DirectX::XMFLOAT3(stof(input1), stof(input2), stof(input3)));
+	m_UVs.push_back(DirectX::XMFLOAT2(stof(input1), 1.0f - stof(input2)));
 }
 
 void Model::PushBackTriangle(string line)
@@ -676,9 +674,22 @@ void Model::LoadTextureFromFile(const std::shared_ptr<DX::DeviceResources>& devi
 		int bytesPerRow = ((uint32)metadata.width * bitsPerPixel) / 8; // number of bytes in each row of the image data
 		int imageSize = bytesPerRow * (uint32)metadata.height; // total image size in bytes
 
-		textures.m_AlbedoTexInfo.imageSize = imageSize;
-		textures.m_AlbedoTexInfo.RowPitch = 0; //((uint32)metadata.width * bitsPerPixel);//(uint32)metadata.width* bitsPerPixel;// (uint32)metadata.width * bitsPerPixel;
-		textures.m_AlbedoTexInfo.SlicePitch = 0;// textures.m_AlbedoTexInfo.RowPitch* (uint32)metadata.height;
+		const DirectX::Image* pImage = scratchImage->GetImages();
+		/*
+			const Image* pImages = scratchImage.GetImages();
+
+			for ( int i = 0; i < scratchImage.GetImageCount(); ++i ){
+
+			auto& subresource = subresources[i];
+			subresource.RowPitch = pImages[i].rowPitch;
+			subresource.SlicePitch = pImages[i].slicePitch;
+			subresource.pData = pImages[i].pixels;
+		*/
+		//Good tutorial for how to apply these params https://logins.github.io/graphics/2020/09/20/D3D12TexturesPart2.html
+		//textures.m_AlbedoTexInfo.imageSize = pImage->pixels;
+		//textures.m_AlbedoTexInfo.RowPitch = pImage->rowPitch; //((uint32)metadata.width * bitsPerPixel);//(uint32)metadata.width* bitsPerPixel;// (uint32)metadata.width * bitsPerPixel;
+		//textures.m_AlbedoTexInfo.SlicePitch = pImage->slicePitch;// textures.m_AlbedoTexInfo.RowPitch* (uint32)metadata.height;
+		textures.m_AlbedoTexInfo.m_Image = pImage;
 
 		m_Textures.push_back(textures);
 	}

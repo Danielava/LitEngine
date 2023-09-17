@@ -62,9 +62,6 @@
     <Image Include="Assets\Wide310x150Logo.scale-200.png">
       <Filter>Assets</Filter>
     </Image>
-    <Filter Include="Assets\3DModels">
-      <UniqueIdentifier>{938317d9-7a62-43a0-b7c9-6e0fb70e1b06}</UniqueIdentifier>
-    </Filter>
     <Filter Include="3DModels">
       <UniqueIdentifier>{ef73e209-11e2-485b-b123-d9f3ead125b8}</UniqueIdentifier>
     </Filter>

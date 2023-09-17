@@ -10,7 +10,8 @@ struct PixelShaderInput
 
 float4 main(PixelShaderInput input) : SV_TARGET
 {
-    float3 color = Albedo.Sample(Sampler, input.uv).xyz; //Causes a crash atm..
-	//return float4(input.color, 1.0f);
+    float3 color = Albedo.Sample(Sampler, input.uv).xyz;
+    float3 normal = input.color;
+    normal = (normal + 1) * 0.5;
     return float4(color, 1.0f);
 }

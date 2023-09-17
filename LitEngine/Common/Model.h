@@ -47,10 +47,12 @@ public:
 	struct TextureInfo
 	{
 		ID3D12Resource* m_AlbedoTex;
+		
+		const DirectX::Image* m_Image;
 
-		UINT imageSize;
-		UINT RowPitch; //Texture Pitch which is stored in here, is the width of the texture times the size of a single pixel in bytes.
-		UINT SlicePitch; //
+		//uint8_t* imageSize;
+		//size_t RowPitch; //Texture Pitch which is stored in here, is the width of the texture times the size of a single pixel in bytes.
+		//size_t SlicePitch;
 	};
 
 	struct ModelComponentTextures
@@ -58,7 +60,7 @@ public:
 		ID3D12Resource* m_AlbedoTex;
 		ID3D12Resource* m_NormalTex;
 		ID3D12Resource* m_MaterialTex;
-		
+
 		TextureInfo m_AlbedoTexInfo;
 		TextureInfo m_NormalTexInfo;
 		TextureInfo m_MaterialTexInfo;
@@ -94,6 +96,7 @@ private:
 	void PushBackVertex(string line);
 	void PushBackTriangle(string line);
 	void PushBackUVs(string line);
+	void PushBackNormal(string line);
 
 
 	std::mutex ms_TextureCacheMutex; //To make sure only one thread accesses the texture cache at one time.

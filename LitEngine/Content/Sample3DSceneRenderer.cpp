@@ -49,7 +49,7 @@ void Sample3DSceneRenderer::CreateDeviceDependentResources(Model* model)
 		//Create a static sampler
 		
 		D3D12_STATIC_SAMPLER_DESC sampler = {};
-		sampler.Filter = D3D12_FILTER_MIN_MAG_MIP_POINT;
+		sampler.Filter = D3D12_FILTER_MIN_MAG_POINT_MIP_LINEAR;// D3D12_FILTER_MIN_MAG_MIP_POINT;
 		sampler.AddressU = D3D12_TEXTURE_ADDRESS_MODE_BORDER;
 		sampler.AddressV = D3D12_TEXTURE_ADDRESS_MODE_BORDER;
 		sampler.AddressW = D3D12_TEXTURE_ADDRESS_MODE_BORDER;
@@ -186,7 +186,7 @@ void Sample3DSceneRenderer::CreateDeviceDependentResources(Model* model)
 		vector<VertexPositionColor> modelVertices(model->GetNrOfVertices());
 		for (int i = 0; i < modelVertices.size(); i++)
 		{
-			modelVertices[i] = { model->m_Vertices[i], model->m_Colors[i], model->m_UVs[i]};
+			modelVertices[i] = { model->m_Vertices[i], model->m_Normals[i], model->m_UVs[i]};
 		}
 
 		const size_t MODEL_BYTE_SIZE = sizeof(DirectX::XMFLOAT3) * model->GetNrOfVertices() * 2 + sizeof(DirectX::XMFLOAT2) * model->GetNrOfVertices(); //2 = because we have vertices and colors!
@@ -372,12 +372,12 @@ void Sample3DSceneRenderer::CreateDeviceDependentResources(Model* model)
 			// OBS: It would probably be best if this code was in Model.cpp where the upload heap is created but we don't have access to the commandList there.. so let's do here instead.
 			{
 
-				BYTE* imageData = (BYTE*)malloc(model->m_Textures[0].m_AlbedoTexInfo.imageSize);
+				//BYTE* imageData = (BYTE*)malloc(model->m_Textures[0].m_AlbedoTexInfo.imageSize);
 
 				D3D12_SUBRESOURCE_DATA textureData = {};
-				textureData.pData = model->m_Textures[0].m_AlbedoTex;//imageData;
-				textureData.RowPitch = model->m_Textures[0].m_AlbedoTexInfo.RowPitch;
-				textureData.SlicePitch = model->m_Textures[0].m_AlbedoTexInfo.SlicePitch;
+				textureData.pData = model->m_Textures[0].m_AlbedoTexInfo.m_Image->pixels;//model->m_Textures[0].m_AlbedoTex;
+				textureData.RowPitch = model->m_Textures[0].m_AlbedoTexInfo.m_Image->rowPitch;
+				textureData.SlicePitch = model->m_Textures[0].m_AlbedoTexInfo.m_Image->slicePitch;
 
 				// Now we copy the upload buffer contents to the default heap
 				const UINT subresourceCount = 1;//texDesc.DepthOrArraySize * texDesc.MipLevels;
@@ -634,37 +634,13 @@ bool Sample3DSceneRenderer::Render(Model* model)
 		CD3DX12_GPU_DESCRIPTOR_HANDLE gpuHandle(m_cbvHeap->GetGPUDescriptorHandleForHeapStart(), 0, m_cbvDescriptorSize);
 		//CD3DX12_GPU_DESCRIPTOR_HANDLE gpuHandle(m_cbvHeap->GetGPUDescriptorHandleForHeapStart());
 		m_commandList->SetGraphicsRootDescriptorTable(0, gpuHandle); //This binds our CB
-		/*
-		D3D12_GPU_VIRTUAL_ADDRESS cbvGpuAddress = m_constantBuffer->GetGPUVirtualAddress();
-		CD3DX12_CPU_DESCRIPTOR_HANDLE cbvCpuHandle(m_cbvHeap->GetCPUDescriptorHandleForHeapStart());
-		m_cbvDescriptorSize = d3dDevice->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
 
-		for (int n = 0; n < DX::c_frameCount; n++)
-		{
-			D3D12_CONSTANT_BUFFER_VIEW_DESC desc;
-			desc.BufferLocation = cbvGpuAddress;
-			desc.SizeInBytes = c_alignedConstantBufferSize;
-			d3dDevice->CreateConstantBufferView(&desc, cbvCpuHandle);
+		//gpuHandle.Offset(m_cbvDescriptorSize);
+		//gpuHandle.Offset(m_cbvDescriptorSize);
+		//gpuHandle.Offset(m_cbvDescriptorSize);
+		gpuHandle = CD3DX12_GPU_DESCRIPTOR_HANDLE(m_cbvHeap->GetGPUDescriptorHandleForHeapStart(), 3, m_cbvDescriptorSize);
+		m_commandList->SetGraphicsRootDescriptorTable(1, gpuHandle); //Bind our tex
 
-			cbvGpuAddress += desc.SizeInBytes;
-			cbvCpuHandle.Offset(m_cbvDescriptorSize);
-		}
-		*/
-		//gpuHandle.Offset(m_deviceResources->GetD3DDevice()->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV));
-		//gpuHandle = CD3DX12_GPU_DESCRIPTOR_HANDLE(m_cbvHeap->GetGPUDescriptorHandleForHeapStart(), m_cbvDescriptorSize);// , m_cbvDescriptorSize);
-		//gpuHandle.Offset(m_deviceResources->GetD3DDevice()->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV));
-		//gpuHandle.Offset(m_deviceResources->GetD3DDevice()->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV));
-		//gpuHandle.Offset(m_deviceResources->GetD3DDevice()->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV));
-		//gpuHandle = CD3DX12_GPU_DESCRIPTOR_HANDLE(m_cbvHeap->GetGPUDescriptorHandleForHeapStart(), 3, m_cbvDescriptorSize); //index 3 should be our texture!
-		//gpuHandle = CD3DX12_GPU_DESCRIPTOR_HANDLE(m_cbvHeap->GetGPUDescriptorHandleForHeapStart(), m_cbvDescriptorSize);// , m_cbvDescriptorSize)
-		//gpuHandle = CD3DX12_GPU_DESCRIPTOR_HANDLE(m_cbvHeap->GetGPUDescriptorHandleForHeapStart(), 3, m_cbvDescriptorSize);
-		//m_commandList->SetGraphicsRootDescriptorTable(1, gpuHandle); //´HERE We need to bind our texture!
-		//CD3DX12_GPU_DESCRIPTOR_HANDLE cbvCpuHandle(m_cbvHeap->GetGPUDescriptorHandleForHeapStart(), 3, m_cbvDescriptorSize);
-		gpuHandle.Offset(m_cbvDescriptorSize);
-		gpuHandle.Offset(m_cbvDescriptorSize);
-		gpuHandle.Offset(m_cbvDescriptorSize);
-		
-		m_commandList->SetGraphicsRootDescriptorTable(1, gpuHandle);
 		//m_commandList->SetGraphicsRootShaderResourceView(321421, model->m_Textures[0].m_AlbedoTex->GetGPUVirtualAddress());
 		//https://www.gamedev.net/forums/topic/710401-directx12-limitation-of-function-setcomputerootshaderresourceview/
 		//m_commandList->SetGraphicsRootShaderResourceView(1, model->m_Textures[0].m_AlbedoTex->GetGPUVirtualAddress()); WTF DIDNT THIS WORK!!??
