@@ -353,8 +353,8 @@ Model::Model(const std::shared_ptr<DX::DeviceResources>& deviceResources, bool x
 	for (int i = 0; i < m_Indices.size(); i++)
 	{
 		m_VertexListTemp[i] = m_Vertices[m_Indices[i].x-1]; //DANIEL: REMEMBER the -1 here it's very important!! It's not 0 indexed.. (smh)
-		m_UVListTemp[i] = m_UVs[m_Indices[i].y - 1]; //Something is wrong here... m_UVs seem to be missing uvs? OMG.. seems like the middle elem (y) is uv...
-		m_NormalListTemp[i] = m_Normals[m_Indices[i].z - 1];
+		m_UVListTemp[i] = m_UVs[m_Indices[i].y-1]; //Something is wrong here... m_UVs seem to be missing uvs? OMG.. seems like the middle elem (y) is uv...
+		m_NormalListTemp[i] = m_Normals[m_Indices[i].z-1];
 	}
 
 	//We iterate one more time to feed our vertex & color buffer

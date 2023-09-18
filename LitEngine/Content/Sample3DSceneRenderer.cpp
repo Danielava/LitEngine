@@ -298,12 +298,13 @@ void Sample3DSceneRenderer::CreateDeviceDependentResources(Model* model)
 			m_commandList->ResourceBarrier(1, &indexBufferResourceBarrier);
 		}
 
+		int nrOfModelComponents = (int)model->GetNrOfVerticesList().size();
 		// Create a descriptor heap for the constant buffers.
 		//Daniel: Use this for your textures as well cause you can only have one of each type in pipeline!
 		//Type is the D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV
 		{
 			D3D12_DESCRIPTOR_HEAP_DESC heapDesc = {};
-			heapDesc.NumDescriptors = 4;// DX::c_frameCount; //Daniel: Should be 4 here, we have 3 constant buffers lol and 1 SRV
+			heapDesc.NumDescriptors = 3 + nrOfModelComponents;// DX::c_frameCount; //Daniel: The 3 is for nr of constant buffers we have
 			heapDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV;
 			// This flag indicates that this descriptor heap can be bound to the pipeline and that descriptors contained in it can be referenced by a root table.
 			heapDesc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE;
@@ -345,49 +346,48 @@ void Sample3DSceneRenderer::CreateDeviceDependentResources(Model* model)
 			It has been offseted so you can use it again and it should properly point to
 			a new empty location!
 		*/
-		//Daniel: Now create your SRV now
-		ID3D12Resource* albedoTex = model->m_Textures[0].m_AlbedoTex;
+		//Daniel: Now create your SRVs now
+		for(int i = 0; i < nrOfModelComponents; i++)
 		{
-			//CD3DX12_CPU_DESCRIPTOR_HANDLE srvCpuHandle = CD3DX12_CPU_DESCRIPTOR_HANDLE(m_cbvHeap->GetCPUDescriptorHandleForHeapStart(), 3, m_cbvDescriptorSize); //Daniel: You need a handle!
-
-			D3D12_SHADER_RESOURCE_VIEW_DESC srvDesc = {};
-			srvDesc.ViewDimension = D3D12_SRV_DIMENSION_TEXTURE2D;
-			srvDesc.Shader4ComponentMapping = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;
-			srvDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
-			srvDesc.Texture2D.MipLevels = 1;
-			srvDesc.Texture2D.MostDetailedMip = 0;
-			srvDesc.Texture2D.ResourceMinLODClamp = 0.0f;
-			//Weird that the ThrowIfFailed didn't work here...
-			d3dDevice->CreateShaderResourceView(
-				model->m_Textures[0].m_AlbedoTex,
-				&srvDesc,//metadata.IsCubemap() ? &shaderResourceViewDesc : NULL, //For textures, it will automatically take care of the SRVDesc for us.
-				cbvCpuHandle
-			);
-
-			//Offset the Handle again so you can use it for even more textures in the DescrHeap
-			//m_cbvDescriptorSize = d3dDevice->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
-			//cbvCpuHandle.Offset(m_cbvDescriptorSize); Daniel: I don't think this is needed..
-
-			// Upload the Texture data to the GPU.
-			// OBS: It would probably be best if this code was in Model.cpp where the upload heap is created but we don't have access to the commandList there.. so let's do here instead.
+			ID3D12Resource* albedoTex = model->m_Textures[i].m_AlbedoTex;
 			{
+				//CD3DX12_CPU_DESCRIPTOR_HANDLE srvCpuHandle = CD3DX12_CPU_DESCRIPTOR_HANDLE(m_cbvHeap->GetCPUDescriptorHandleForHeapStart(), 3, m_cbvDescriptorSize); //Daniel: You need a handle!
 
-				//BYTE* imageData = (BYTE*)malloc(model->m_Textures[0].m_AlbedoTexInfo.imageSize);
+				D3D12_SHADER_RESOURCE_VIEW_DESC srvDesc = {};
+				srvDesc.ViewDimension = D3D12_SRV_DIMENSION_TEXTURE2D;
+				srvDesc.Shader4ComponentMapping = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;
+				srvDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
+				srvDesc.Texture2D.MipLevels = 1;
+				srvDesc.Texture2D.MostDetailedMip = 0;
+				srvDesc.Texture2D.ResourceMinLODClamp = 0.0f;
+				//Weird that the ThrowIfFailed didn't work here...
+				d3dDevice->CreateShaderResourceView(
+					model->m_Textures[i].m_AlbedoTex,
+					&srvDesc,//metadata.IsCubemap() ? &shaderResourceViewDesc : NULL, //For textures, it will automatically take care of the SRVDesc for us.
+					cbvCpuHandle
+				);
 
-				D3D12_SUBRESOURCE_DATA textureData = {};
-				textureData.pData = model->m_Textures[0].m_AlbedoTexInfo.m_Image->pixels;//model->m_Textures[0].m_AlbedoTex;
-				textureData.RowPitch = model->m_Textures[0].m_AlbedoTexInfo.m_Image->rowPitch;
-				textureData.SlicePitch = model->m_Textures[0].m_AlbedoTexInfo.m_Image->slicePitch;
+				//Offset the Handle again so you can use it for even more textures in the DescrHeap
+				cbvCpuHandle.Offset(m_cbvDescriptorSize);
 
-				// Now we copy the upload buffer contents to the default heap
-				const UINT subresourceCount = 1;//texDesc.DepthOrArraySize * texDesc.MipLevels;
-				UpdateSubresources(m_commandList.Get(), model->m_Textures[0].m_AlbedoTex, model->m_TextureBufferUploadHeap[0], 0, 0, subresourceCount, &textureData);
+				// Upload the Texture data to the GPU.
+				// OBS: It would probably be best if this code was in Model.cpp where the upload heap is created but we don't have access to the commandList there.. so let's do here instead.
+				{
+					D3D12_SUBRESOURCE_DATA textureData = {};
+					textureData.pData = model->m_Textures[i].m_AlbedoTexInfo.m_Image->pixels;//model->m_Textures[0].m_AlbedoTex;
+					textureData.RowPitch = model->m_Textures[i].m_AlbedoTexInfo.m_Image->rowPitch;
+					textureData.SlicePitch = model->m_Textures[i].m_AlbedoTexInfo.m_Image->slicePitch;
 
-				// transition the texture default heap to a pixel shader resource (we will be sampling from this heap in the pixel shader to get the color of pixels)
-				m_commandList->ResourceBarrier(1, &CD3DX12_RESOURCE_BARRIER::Transition(model->m_Textures[0].m_AlbedoTex, D3D12_RESOURCE_STATE_COPY_DEST, D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE));
+					// Now we copy the upload buffer contents to the default heap
+					const UINT subresourceCount = 1;//texDesc.DepthOrArraySize * texDesc.MipLevels;
+					UpdateSubresources(m_commandList.Get(), model->m_Textures[i].m_AlbedoTex, model->m_TextureBufferUploadHeap[i], 0, 0, subresourceCount, &textureData);
+
+					// transition the texture default heap to a pixel shader resource (we will be sampling from this heap in the pixel shader to get the color of pixels)
+					m_commandList->ResourceBarrier(1, &CD3DX12_RESOURCE_BARRIER::Transition(model->m_Textures[i].m_AlbedoTex, D3D12_RESOURCE_STATE_COPY_DEST, D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE));
+				}
+				//Important note: Right here we can apparently delete the image once we're done with it (in this tutorial once its uploaded to the gpu which is right here!)
+				//Or can we??
 			}
-
-			//Important note: Right here we can apparently delete the image once we're done with it (in this tutorial once its uploaded to the gpu which is right here!)
 		}
 
 		// Map the constant buffers.
@@ -638,8 +638,6 @@ bool Sample3DSceneRenderer::Render(Model* model)
 		//gpuHandle.Offset(m_cbvDescriptorSize);
 		//gpuHandle.Offset(m_cbvDescriptorSize);
 		//gpuHandle.Offset(m_cbvDescriptorSize);
-		gpuHandle = CD3DX12_GPU_DESCRIPTOR_HANDLE(m_cbvHeap->GetGPUDescriptorHandleForHeapStart(), 3, m_cbvDescriptorSize);
-		m_commandList->SetGraphicsRootDescriptorTable(1, gpuHandle); //Bind our tex
 
 		//m_commandList->SetGraphicsRootShaderResourceView(321421, model->m_Textures[0].m_AlbedoTex->GetGPUVirtualAddress());
 		//https://www.gamedev.net/forums/topic/710401-directx12-limitation-of-function-setcomputerootshaderresourceview/
@@ -694,8 +692,14 @@ bool Sample3DSceneRenderer::Render(Model* model)
 		vector<int> vertexComponentList = model->GetNrOfVerticesList();
 		for(int i = 0; i < nrOfComponents; i++)
 		{
+			{
+				//Bind our per-component textures!
+				gpuHandle = CD3DX12_GPU_DESCRIPTOR_HANDLE(m_cbvHeap->GetGPUDescriptorHandleForHeapStart(), 3 + i, m_cbvDescriptorSize);
+				m_commandList->SetGraphicsRootDescriptorTable(1, gpuHandle); //Bind our tex
+			}
+
 			//int totalModelVertices = (UINT)model->GetNrOfVertices();
-			int nrOfVerticesInComponent = vertexComponentList[i]*6; //The startVertex loc needs to be multiplied with 6 because each vertex has 6 floats (3 for pos, 3 for normal) ACTUALLY NO... not sure about why 6 is needed there...
+			int nrOfVerticesInComponent = vertexComponentList[i]; //The startVertex loc needs to be multiplied with 6 because each vertex has 6 floats (3 for pos, 3 for normal) ACTUALLY NO... not sure about why 6 is needed there...
 			m_commandList->DrawInstanced((UINT)nrOfVerticesInComponent, 1, (UINT)vertexBufferOffset, 0); //third param = starvertex location
 			vertexBufferOffset += nrOfVerticesInComponent;
 		}
