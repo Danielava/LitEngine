@@ -66,7 +66,7 @@ public:
 		TextureInfo m_MaterialTexInfo;
 	};
 
-	ID3D12Resource* m_TextureBufferUploadHeap;
+	vector<ID3D12Resource*> m_TextureBufferUploadHeap;
 	vector<ModelComponentTextures> m_Textures;
 
 
@@ -81,7 +81,12 @@ public:
 
 		This way I think it's easier to setup the one single vertex buffer and index buffer and not multiple ones.
 	*/
-	vector<string> m_MaterialNames;
+	struct MaterialInfo
+	{
+		string name;
+		vector<string> texturePaths;
+	};
+	vector<MaterialInfo> m_MaterialNames;
 	vector<int> m_NrOfVerticesPerComponent;
 
 private:
@@ -100,7 +105,8 @@ private:
 
 
 	std::mutex ms_TextureCacheMutex; //To make sure only one thread accesses the texture cache at one time.
-	void LoadTextureFromFile(const std::shared_ptr<DX::DeviceResources>& deviceResources, string filepath);
+	void LoadTextureFromFile(const std::shared_ptr<DX::DeviceResources>& deviceResources, string filepath, int materialIndex);
+	void LoadMaterials(const std::shared_ptr<DX::DeviceResources>& deviceResources);
 };
 
 //#endif

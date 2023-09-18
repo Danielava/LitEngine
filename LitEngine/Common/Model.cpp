@@ -275,13 +275,27 @@ Model::Model(const std::shared_ptr<DX::DeviceResources>& deviceResources, bool x
 
 		if (line[0] == 'o')
 		{
-			m_MaterialNames.push_back(line);
 			if(nrOfModelComponenets >= 0)
 			{
 				m_NrOfVerticesPerComponent.push_back(0);
 				m_NrOfVerticesPerComponent[nrOfModelComponenets] = nrOfVertices - sumListElements(m_NrOfVerticesPerComponent);
 			}
 			nrOfModelComponenets++;
+		}
+
+		if (line[0] == 'u') //usemtl
+		{
+			string input1;
+
+			std::stringstream lineStream = GetModifiedLine(line, ' ');
+
+			lineStream >> input1; //First will be trash (the v, vn, vt etc)
+			lineStream >> input1;
+
+			MaterialInfo info;
+			info.name = input1;
+
+			m_MaterialNames.push_back(info);
 		}
 
 		if (LineShouldBeSkipped(line))
@@ -360,13 +374,7 @@ Model::Model(const std::shared_ptr<DX::DeviceResources>& deviceResources, bool x
 	//Open textures
 	//TODO: You need to loop here and open all textures stored in m_Materials.
 
-	//string filepath = "3DModels/m_body_alb.png"; //WORKED!!
-	//string filepath = "3DModels/m_cap_alb.png";
-	string filepath = "3DModels/m_clothes_alb.png";
-	//string filepath = "3DModels/m_clothes_nrm.png";
-	//string filepath = "3DModels/m_cap_ao.png";
-	//string filepath = "3DModels/m_hair_alb.png";
-	LoadTextureFromFile(deviceResources, filepath);
+	LoadMaterials(deviceResources);
 
 	//filepath = "3DModels\\m_body_alb.png"; //Also WORKED!!
 	//LoadTextureFromFile(filepath);
@@ -409,7 +417,6 @@ void Model::PushBackUVs(string line)
 {
 	string input1;
 	string input2;
-	string input3;
 
 	std::stringstream lineStream = GetModifiedLine(line, ' ');
 
@@ -568,7 +575,7 @@ static void StringToWString(std::wstring& ws, const std::string& s)
 }
 
 //Using DirectXTex to load images into DX12 format. Tutorial: https://www.3dgep.com/learning-directx-12-4/
-void Model::LoadTextureFromFile(const std::shared_ptr<DX::DeviceResources>& deviceResources, string filepath)
+void Model::LoadTextureFromFile(const std::shared_ptr<DX::DeviceResources>& deviceResources, string filepath, int materialIndex)
 {
 	std::lock_guard<std::mutex> lock(ms_TextureCacheMutex); //Note, we don't have a texture cache yet so this is useless!
 	
@@ -635,7 +642,6 @@ void Model::LoadTextureFromFile(const std::shared_ptr<DX::DeviceResources>& devi
 			IID_PPV_ARGS(&newTextureResource)
 		));
 
-
 		//TUTORIAL: Upload heap https://www.braynzarsoft.net/viewtutorial/q16390-directx-12-textures-from-file
 		//Upload heap, upload the image data to our newTextureResource
 		{
@@ -653,7 +659,7 @@ void Model::LoadTextureFromFile(const std::shared_ptr<DX::DeviceResources>& devi
 				&CD3DX12_RESOURCE_DESC::Buffer(textureUploadBufferSize), // resource description for a buffer (storing the image data in this heap just to copy to the default heap)
 				D3D12_RESOURCE_STATE_GENERIC_READ, // We will copy the contents from this heap to the default heap above
 				nullptr,
-				IID_PPV_ARGS(&m_TextureBufferUploadHeap));
+				IID_PPV_ARGS(&m_TextureBufferUploadHeap[materialIndex]));
 			if (FAILED(hr))
 			{
 				//TODO: Som error message
@@ -693,4 +699,64 @@ void Model::LoadTextureFromFile(const std::shared_ptr<DX::DeviceResources>& devi
 
 		m_Textures.push_back(textures);
 	}
+}
+
+void Model::LoadMaterials(const std::shared_ptr<DX::DeviceResources>& deviceResources)
+{
+	m_TextureBufferUploadHeap.resize(m_MaterialNames.size());
+	int currentMaterialIndex = 0;
+
+	ifstream fileIn;
+	fileIn.open("Harmony.mtl");
+
+	for (std::string line; std::getline(fileIn, line);)
+	{
+		string input1;
+
+		std::stringstream lineStream = GetModifiedLine(line, ' ');
+
+		lineStream >> input1;
+
+		if (input1.compare("newmtl") == 0)
+		{
+			string materialName;
+			lineStream >> materialName;
+
+			for (int j = 0; j < m_MaterialNames.size(); j++)
+			{
+				if (m_MaterialNames[j].name.compare(materialName) == 0)
+				{
+					currentMaterialIndex = j;
+					break;
+				}
+			}
+		}
+		else if (input1.compare(0, 3, "map") == 0)
+		{
+			//We're grabbing all textures (they are all marked by "map" at the beginning line)
+			string texPath;
+			lineStream >> texPath;
+			m_MaterialNames[currentMaterialIndex].texturePaths.push_back(texPath);
+		}
+	}
+
+	
+	for (int i = 0; i < m_MaterialNames.size(); i++)
+	{
+		string filepath = "3DModels/";
+		filepath = filepath + m_MaterialNames[i].texturePaths[0]; //texturePaths[0] should always be albedo tex!
+		LoadTextureFromFile(deviceResources, filepath, i);
+	}
+	
+
+	//string filepath = "3DModels/";
+	//filepath = filepath + "M_Body_Alb.png";
+	//LoadTextureFromFile(deviceResources, filepath);
+	//string filepath = "3DModels/m_body_alb.png"; //WORKED!!
+	//string filepath = "3DModels/m_cap_alb.png";
+	//string filepath = "3DModels/m_clothes_alb.png";
+	//string filepath = "3DModels/m_clothes_nrm.png";
+	//string filepath = "3DModels/m_cap_ao.png";
+	//string filepath = "3DModels/m_hair_alb.png";
+	//LoadTextureFromFile(deviceResources, filepath);
 }

@@ -381,7 +381,7 @@ void Sample3DSceneRenderer::CreateDeviceDependentResources(Model* model)
 
 				// Now we copy the upload buffer contents to the default heap
 				const UINT subresourceCount = 1;//texDesc.DepthOrArraySize * texDesc.MipLevels;
-				UpdateSubresources(m_commandList.Get(), model->m_Textures[0].m_AlbedoTex, model->m_TextureBufferUploadHeap, 0, 0, subresourceCount, &textureData);
+				UpdateSubresources(m_commandList.Get(), model->m_Textures[0].m_AlbedoTex, model->m_TextureBufferUploadHeap[0], 0, 0, subresourceCount, &textureData);
 
 				// transition the texture default heap to a pixel shader resource (we will be sampling from this heap in the pixel shader to get the color of pixels)
 				m_commandList->ResourceBarrier(1, &CD3DX12_RESOURCE_BARRIER::Transition(model->m_Textures[0].m_AlbedoTex, D3D12_RESOURCE_STATE_COPY_DEST, D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE));
