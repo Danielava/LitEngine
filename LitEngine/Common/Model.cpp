@@ -249,8 +249,8 @@ Model::Model(const std::shared_ptr<DX::DeviceResources>& deviceResources, bool x
 	//fileIn.open("Harmony2.txt");
 	//fileIn.open("C:\\Users\\Daniel\\GraphicsProjects\\LitEngine\\LitEngine\\Assets\\3DModels\\Harmony\\Harmony.txt");
 
-	fileIn.open("Harmony2.txt");
-	//fileIn.open("Zelda.txt");
+	//fileIn.open("Harmony2.txt");
+	fileIn.open("Zelda.txt");
 
 	int nrOfVertices = 0;
 	int nrOfNormals = 0;
@@ -278,7 +278,7 @@ Model::Model(const std::shared_ptr<DX::DeviceResources>& deviceResources, bool x
 			if(nrOfModelComponenets >= 0)
 			{
 				m_NrOfVerticesPerComponent.push_back(0);
-				m_NrOfVerticesPerComponent[nrOfModelComponenets] = nrOfVertices - sumListElements(m_NrOfVerticesPerComponent);
+				m_NrOfVerticesPerComponent[nrOfModelComponenets] = nrOfTriangles*3 - sumListElements(m_NrOfVerticesPerComponent);
 			}
 			nrOfModelComponenets++;
 		}
@@ -329,7 +329,7 @@ Model::Model(const std::shared_ptr<DX::DeviceResources>& deviceResources, bool x
 	if(nrOfModelComponenets > 0)
 	{
 		m_NrOfVerticesPerComponent.push_back(0);
-		m_NrOfVerticesPerComponent[nrOfModelComponenets] = nrOfVertices - sumListElements(m_NrOfVerticesPerComponent);
+		m_NrOfVerticesPerComponent[nrOfModelComponenets] = nrOfTriangles*3 - sumListElements(m_NrOfVerticesPerComponent);
 	}
 
 	//printf("p: %s", current_working_directory().c_str()); //printf is a c thing, not c++, that's why you can't print strings with it. BUT you can write strings if you use c_str();
@@ -393,8 +393,8 @@ void Model::PushBackVertex(string line)
 	lineStream >> input2;
 	lineStream >> input3;
 
-	m_Vertices.push_back(DirectX::XMFLOAT3(stof(input1) * 50.0f, stof(input2) * 50.0f, stof(input3) * 50.0f));
-	//m_Vertices.push_back(DirectX::XMFLOAT3(stof(input1), stof(input2), stof(input3)));
+	//m_Vertices.push_back(DirectX::XMFLOAT3(stof(input1) * 50.0f, stof(input2) * 50.0f, stof(input3) * 50.0f));
+	m_Vertices.push_back(DirectX::XMFLOAT3(stof(input1)*1.3f, stof(input2) * 1.3f, stof(input3) * 1.3f));
 }
 
 void Model::PushBackNormal(string line)
@@ -707,7 +707,8 @@ void Model::LoadMaterials(const std::shared_ptr<DX::DeviceResources>& deviceReso
 	int currentMaterialIndex = 0;
 
 	ifstream fileIn;
-	fileIn.open("Harmony.mtl");
+	//fileIn.open("Harmony.mtl");
+	fileIn.open("Zelda.mtl");
 
 	for (std::string line; std::getline(fileIn, line);)
 	{
@@ -726,6 +727,10 @@ void Model::LoadMaterials(const std::shared_ptr<DX::DeviceResources>& deviceReso
 			{
 				if (m_MaterialNames[j].name.compare(materialName) == 0)
 				{
+					if (m_MaterialNames[j].texturePaths.size() > 0)
+					{
+						continue;
+					}
 					currentMaterialIndex = j;
 					break;
 				}

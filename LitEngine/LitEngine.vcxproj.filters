@@ -172,5 +172,14 @@
     <Image Include="3DModels\m_body_alb.png">
       <Filter>3DModels</Filter>
     </Image>
+    <Image Include="3DModels\hair_diff.png">
+      <Filter>3DModels</Filter>
+    </Image>
+    <Image Include="3DModels\zelda_diff.png">
+      <Filter>3DModels</Filter>
+    </Image>
+    <Image Include="3DModels\eyes_diff.png">
+      <Filter>3DModels</Filter>
+    </Image>
   </ItemGroup>
 </Project>
