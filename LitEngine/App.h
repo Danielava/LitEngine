@@ -4,6 +4,9 @@
 #include "Common\DeviceResources.h"
 #include "LitEngineMain.h"
 
+#include "Keyboard.h"
+#include "Mouse.h"
+
 namespace LitEngine
 {
 	// Main entry point for our app. Connects the app with the Windows shell and handles application lifecycle events.
@@ -43,6 +46,11 @@ namespace LitEngine
 		std::unique_ptr<LitEngineMain> m_main;
 		bool m_windowClosed;
 		bool m_windowVisible;
+
+		//Tutorial for how to install DirectXTK which you need in order to use keyboard and mouse.
+		//https://github.com/Microsoft/DirectXTK/wiki/Adding-the-DirectX-Tool-Kit
+		std::unique_ptr<DirectX::Keyboard> m_Keyboard;
+		std::unique_ptr<DirectX::Mouse> m_Mouse;
 	};
 }
 

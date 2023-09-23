@@ -65,6 +65,15 @@
     <Filter Include="3DModels">
       <UniqueIdentifier>{ef73e209-11e2-485b-b123-d9f3ead125b8}</UniqueIdentifier>
     </Filter>
+    <Filter Include="3DModels\Terra">
+      <UniqueIdentifier>{7c029785-d317-49f6-b82e-b32357025337}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="3DModels\Terra\Model">
+      <UniqueIdentifier>{3dbf8993-b1c9-4dac-a847-7edc5c40b4e1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="3DModels\Terra\Model\png">
+      <UniqueIdentifier>{c67af875-90f8-41ea-bfec-93eafdeba101}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="App.cpp" />
@@ -88,6 +97,9 @@
   </ItemGroup>
   <ItemGroup>
     <Text Include="Harmony.txt" />
+    <Text Include="..\x64\Debug\LitEngine\AppX\Terra.txt">
+      <Filter>3DModels\Terra</Filter>
+    </Text>
     <Text Include="..\Zelda.txt" />
   </ItemGroup>
   <ItemGroup>
@@ -172,14 +184,245 @@
     <Image Include="3DModels\m_body_alb.png">
       <Filter>3DModels</Filter>
     </Image>
-    <Image Include="3DModels\hair_diff.png">
+    <Image Include="Assets\3DModels\Terra\png\0.dds">
+      <Filter>3DModels\Terra\Model\png</Filter>
+    </Image>
+    <Image Include="Assets\3DModels\Terra\png\1.dds">
+      <Filter>3DModels\Terra\Model\png</Filter>
+    </Image>
+    <Image Include="Assets\3DModels\Terra\png\2.dds">
+      <Filter>3DModels\Terra\Model\png</Filter>
+    </Image>
+    <Image Include="Assets\3DModels\Terra\png\3.dds">
+      <Filter>3DModels\Terra\Model\png</Filter>
+    </Image>
+    <Image Include="Assets\3DModels\Terra\png\4.dds">
+      <Filter>3DModels\Terra\Model\png</Filter>
+    </Image>
+    <Image Include="Assets\3DModels\Terra\png\5.dds">
+      <Filter>3DModels\Terra\Model\png</Filter>
+    </Image>
+    <Image Include="Assets\3DModels\Terra\png\6.dds">
+      <Filter>3DModels\Terra\Model\png</Filter>
+    </Image>
+    <Image Include="Assets\3DModels\Terra\png\7.dds">
+      <Filter>3DModels\Terra\Model\png</Filter>
+    </Image>
+    <Image Include="Assets\3DModels\Terra\png\8.dds">
+      <Filter>3DModels\Terra\Model\png</Filter>
+    </Image>
+    <Image Include="Assets\3DModels\Terra\png\9.dds">
+      <Filter>3DModels\Terra\Model\png</Filter>
+    </Image>
+    <Image Include="Assets\3DModels\Terra\png\10.dds">
+      <Filter>3DModels\Terra\Model\png</Filter>
+    </Image>
+    <Image Include="Assets\3DModels\Terra\png\11.dds">
+      <Filter>3DModels\Terra\Model\png</Filter>
+    </Image>
+    <Image Include="Assets\3DModels\Terra\png\12.dds">
+      <Filter>3DModels\Terra\Model\png</Filter>
+    </Image>
+    <Image Include="Assets\3DModels\Terra\png\13.dds">
+      <Filter>3DModels\Terra\Model\png</Filter>
+    </Image>
+    <Image Include="Assets\3DModels\Terra\png\14.dds">
+      <Filter>3DModels\Terra\Model\png</Filter>
+    </Image>
+    <Image Include="Assets\3DModels\Terra\png\15.dds">
+      <Filter>3DModels\Terra\Model\png</Filter>
+    </Image>
+    <Image Include="Assets\3DModels\Terra\png\16.dds">
+      <Filter>3DModels\Terra\Model\png</Filter>
+    </Image>
+    <Image Include="Assets\3DModels\Terra\png\17.dds">
+      <Filter>3DModels\Terra\Model\png</Filter>
+    </Image>
+    <Image Include="Assets\3DModels\Terra\png\18.dds">
+      <Filter>3DModels\Terra\Model\png</Filter>
+    </Image>
+    <Image Include="Assets\3DModels\Terra\png\19.dds">
+      <Filter>3DModels\Terra\Model\png</Filter>
+    </Image>
+    <Image Include="Assets\3DModels\Terra\png\20.dds">
+      <Filter>3DModels\Terra\Model\png</Filter>
+    </Image>
+    <Image Include="Assets\3DModels\Terra\png\21.dds">
+      <Filter>3DModels\Terra\Model\png</Filter>
+    </Image>
+    <Image Include="Assets\3DModels\Terra\png\21_bad.dds">
+      <Filter>3DModels\Terra\Model\png</Filter>
+    </Image>
+    <Image Include="Assets\3DModels\Terra\png\22.dds">
+      <Filter>3DModels\Terra\Model\png</Filter>
+    </Image>
+    <Image Include="Assets\3DModels\Terra\png\23.dds">
+      <Filter>3DModels\Terra\Model\png</Filter>
+    </Image>
+    <Image Include="Assets\3DModels\Terra\png\24.dds">
+      <Filter>3DModels\Terra\Model\png</Filter>
+    </Image>
+    <Image Include="Assets\3DModels\Terra\png\25.dds">
+      <Filter>3DModels\Terra\Model\png</Filter>
+    </Image>
+    <Image Include="Assets\3DModels\Terra\png\26.dds">
+      <Filter>3DModels\Terra\Model\png</Filter>
+    </Image>
+    <Image Include="Assets\3DModels\Terra\png\27.dds">
+      <Filter>3DModels\Terra\Model\png</Filter>
+    </Image>
+    <Image Include="Assets\3DModels\Terra\png\28.dds">
+      <Filter>3DModels\Terra\Model\png</Filter>
+    </Image>
+    <Image Include="Assets\3DModels\Terra\png\29.dds">
+      <Filter>3DModels\Terra\Model\png</Filter>
+    </Image>
+    <Image Include="Assets\3DModels\Terra\png\30.dds">
+      <Filter>3DModels\Terra\Model\png</Filter>
+    </Image>
+    <Image Include="Assets\3DModels\Terra\png\31.dds">
+      <Filter>3DModels\Terra\Model\png</Filter>
+    </Image>
+    <Image Include="Assets\3DModels\Terra\png\32.dds">
+      <Filter>3DModels\Terra\Model\png</Filter>
+    </Image>
+    <Image Include="Assets\3DModels\Terra\png\33.dds">
+      <Filter>3DModels\Terra\Model\png</Filter>
+    </Image>
+    <Image Include="..\..\..\..\Desktop\Terra3DModel\png\png\0.png">
+      <Filter>3DModels\Terra\Model\png</Filter>
+    </Image>
+    <Image Include="..\..\..\..\Desktop\Terra3DModel\png\png\1.png">
+      <Filter>3DModels\Terra\Model\png</Filter>
+    </Image>
+    <Image Include="..\..\..\..\Desktop\Terra3DModel\png\png\2.png">
+      <Filter>3DModels\Terra\Model\png</Filter>
+    </Image>
+    <Image Include="..\..\..\..\Desktop\Terra3DModel\png\png\3.png">
+      <Filter>3DModels\Terra\Model\png</Filter>
+    </Image>
+    <Image Include="..\..\..\..\Desktop\Terra3DModel\png\png\4.png">
+      <Filter>3DModels\Terra\Model\png</Filter>
+    </Image>
+    <Image Include="..\..\..\..\Desktop\Terra3DModel\png\png\5.png">
+      <Filter>3DModels\Terra\Model\png</Filter>
+    </Image>
+    <Image Include="..\..\..\..\Desktop\Terra3DModel\png\png\6.png">
+      <Filter>3DModels\Terra\Model\png</Filter>
+    </Image>
+    <Image Include="..\..\..\..\Desktop\Terra3DModel\png\png\7.png">
+      <Filter>3DModels\Terra\Model\png</Filter>
+    </Image>
+    <Image Include="..\..\..\..\Desktop\Terra3DModel\png\png\8.png">
+      <Filter>3DModels\Terra\Model\png</Filter>
+    </Image>
+    <Image Include="..\..\..\..\Desktop\Terra3DModel\png\png\9.png">
+      <Filter>3DModels\Terra\Model\png</Filter>
+    </Image>
+    <Image Include="..\..\..\..\Desktop\Terra3DModel\png\png\10.png">
+      <Filter>3DModels\Terra\Model\png</Filter>
+    </Image>
+    <Image Include="..\..\..\..\Desktop\Terra3DModel\png\png\11.png">
+      <Filter>3DModels\Terra\Model\png</Filter>
+    </Image>
+    <Image Include="..\..\..\..\Desktop\Terra3DModel\png\png\12.png">
+      <Filter>3DModels\Terra\Model\png</Filter>
+    </Image>
+    <Image Include="..\..\..\..\Desktop\Terra3DModel\png\png\13.png">
+      <Filter>3DModels\Terra\Model\png</Filter>
+    </Image>
+    <Image Include="..\..\..\..\Desktop\Terra3DModel\png\png\14.png">
+      <Filter>3DModels\Terra\Model\png</Filter>
+    </Image>
+    <Image Include="..\..\..\..\Desktop\Terra3DModel\png\png\15.png">
+      <Filter>3DModels\Terra\Model\png</Filter>
+    </Image>
+    <Image Include="..\..\..\..\Desktop\Terra3DModel\png\png\16.png">
+      <Filter>3DModels\Terra\Model\png</Filter>
+    </Image>
+    <Image Include="..\..\..\..\Desktop\Terra3DModel\png\png\17.png">
+      <Filter>3DModels\Terra\Model\png</Filter>
+    </Image>
+    <Image Include="..\..\..\..\Desktop\Terra3DModel\png\png\18.png">
+      <Filter>3DModels\Terra\Model\png</Filter>
+    </Image>
+    <Image Include="..\..\..\..\Desktop\Terra3DModel\png\png\19.png">
+      <Filter>3DModels\Terra\Model\png</Filter>
+    </Image>
+    <Image Include="..\..\..\..\Desktop\Terra3DModel\png\png\20.png">
+      <Filter>3DModels\Terra\Model\png</Filter>
+    </Image>
+    <Image Include="..\..\..\..\Desktop\Terra3DModel\png\png\21.png">
+      <Filter>3DModels\Terra\Model\png</Filter>
+    </Image>
+    <Image Include="..\..\..\..\Desktop\Terra3DModel\png\png\21_bad.png">
+      <Filter>3DModels\Terra\Model\png</Filter>
+    </Image>
+    <Image Include="..\..\..\..\Desktop\Terra3DModel\png\png\22.png">
+      <Filter>3DModels\Terra\Model\png</Filter>
+    </Image>
+    <Image Include="..\..\..\..\Desktop\Terra3DModel\png\png\23.png">
+      <Filter>3DModels\Terra\Model\png</Filter>
+    </Image>
+    <Image Include="..\..\..\..\Desktop\Terra3DModel\png\png\24.png">
+      <Filter>3DModels\Terra\Model\png</Filter>
+    </Image>
+    <Image Include="..\..\..\..\Desktop\Terra3DModel\png\png\25.png">
+      <Filter>3DModels\Terra\Model\png</Filter>
+    </Image>
+    <Image Include="..\..\..\..\Desktop\Terra3DModel\png\png\26.png">
+      <Filter>3DModels\Terra\Model\png</Filter>
+    </Image>
+    <Image Include="..\..\..\..\Desktop\Terra3DModel\png\png\27.png">
+      <Filter>3DModels\Terra\Model\png</Filter>
+    </Image>
+    <Image Include="..\..\..\..\Desktop\Terra3DModel\png\png\28.png">
+      <Filter>3DModels\Terra\Model\png</Filter>
+    </Image>
+    <Image Include="..\..\..\..\Desktop\Terra3DModel\png\png\29.png">
+      <Filter>3DModels\Terra\Model\png</Filter>
+    </Image>
+    <Image Include="..\..\..\..\Desktop\Terra3DModel\png\png\30.png">
+      <Filter>3DModels\Terra\Model\png</Filter>
+    </Image>
+    <Image Include="..\..\..\..\Desktop\Terra3DModel\png\png\31.png">
+      <Filter>3DModels\Terra\Model\png</Filter>
+    </Image>
+    <Image Include="..\..\..\..\Desktop\Terra3DModel\png\png\32.png">
+      <Filter>3DModels\Terra\Model\png</Filter>
+    </Image>
+    <Image Include="..\..\..\..\Desktop\Terra3DModel\png\png\33.png">
+      <Filter>3DModels\Terra\Model\png</Filter>
+    </Image>
+    <Image Include="..\x64\Debug\LitEngine\AppX\3DModels\ZeldaTextures\eyes_diff.png">
       <Filter>3DModels</Filter>
     </Image>
-    <Image Include="3DModels\zelda_diff.png">
+    <Image Include="..\x64\Debug\LitEngine\AppX\3DModels\ZeldaTextures\eyesDark_diff.png">
       <Filter>3DModels</Filter>
     </Image>
-    <Image Include="3DModels\eyes_diff.png">
+    <Image Include="..\x64\Debug\LitEngine\AppX\3DModels\ZeldaTextures\hair_diff.png">
       <Filter>3DModels</Filter>
     </Image>
+    <Image Include="..\x64\Debug\LitEngine\AppX\3DModels\ZeldaTextures\hairDark_diff.png">
+      <Filter>3DModels</Filter>
+    </Image>
+    <Image Include="..\x64\Debug\LitEngine\AppX\3DModels\ZeldaTextures\hairLongDark_diff.png">
+      <Filter>3DModels</Filter>
+    </Image>
+    <Image Include="..\x64\Debug\LitEngine\AppX\3DModels\ZeldaTextures\melee_diff.png">
+      <Filter>3DModels</Filter>
+    </Image>
+    <Image Include="..\x64\Debug\LitEngine\AppX\3DModels\ZeldaTextures\misc_diff.png">
+      <Filter>3DModels</Filter>
+    </Image>
+    <Image Include="..\x64\Debug\LitEngine\AppX\3DModels\ZeldaTextures\zelda_diff.png">
+      <Filter>3DModels</Filter>
+    </Image>
+    <Image Include="..\x64\Debug\LitEngine\AppX\3DModels\ZeldaTextures\zeldaDark_diff.png">
+      <Filter>3DModels</Filter>
+    </Image>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
   </ItemGroup>
 </Project>

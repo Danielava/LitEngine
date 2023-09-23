@@ -459,7 +459,7 @@ void Sample3DSceneRenderer::CreateWindowSizeDependentResources()
 		);
 
 	// Eye is at (0,0.7,1.5), looking at point (0,-0.1,0) with the up-vector along the y-axis.
-	static const XMVECTORF32 eye = { 0.0f, 0.7f, 3.0f, 0.0f };
+	static const XMVECTORF32 eye = { 0.0f, 1.5f, 2.5f, 0.0f }; //Increase y-param to move object down, //Increase z to zoom in and out
 	static const XMVECTORF32 at = { -0.0f, -0.0f, -10.0f, 0.0f }; //0.0f, -0.1f, 0.0f, 0.0f
 	static const XMVECTORF32 up = { 0.0f, 1.0f, 0.0f, 0.0f }; // 0.0f, 1.0f, 0.0f, 0.0f
 
@@ -473,8 +473,9 @@ void Sample3DSceneRenderer::Update(DX::StepTimer const& timer)
 	{
 		if (!m_tracking)
 		{
-			// Rotate the cube a small amount.
-			m_angle += static_cast<float>(timer.GetElapsedSeconds()) * m_radiansPerSecond;
+			// Rotation of the object, TODO: Bind this to some key
+			m_angle += static_cast<float>(timer.GetElapsedSeconds())* m_radiansPerSecond;
+			//m_angle += 0;
 
 			Rotate(m_angle);
 		}
@@ -677,7 +678,7 @@ bool Sample3DSceneRenderer::Render(Model* model)
 		// Record drawing commands.
 		D3D12_CPU_DESCRIPTOR_HANDLE renderTargetView = m_deviceResources->GetRenderTargetView();
 		D3D12_CPU_DESCRIPTOR_HANDLE depthStencilView = m_deviceResources->GetDepthStencilView();
-		m_commandList->ClearRenderTargetView(renderTargetView, DirectX::Colors::CornflowerBlue, 0, nullptr);
+		m_commandList->ClearRenderTargetView(renderTargetView, DirectX::Colors::Black/*DirectX::Colors::CornflowerBlue*/, 0, nullptr);
 		m_commandList->ClearDepthStencilView(depthStencilView, D3D12_CLEAR_FLAG_DEPTH, 1.0f, 0, 0, nullptr);
 
 		m_commandList->OMSetRenderTargets(1, &renderTargetView, false, &depthStencilView);

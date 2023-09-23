@@ -52,6 +52,9 @@ void App::Initialize(CoreApplicationView^ applicationView)
 
 	CoreApplication::Resuming +=
 		ref new EventHandler<Platform::Object^>(this, &App::OnResuming);
+
+	//m_Keyboard = std::make_unique<DirectX::Keyboard>();
+	//m_Mouse = std::make_unique<DirectX::Mouse>();
 }
 
 // Called when the CoreWindow object is created (or re-created).
@@ -76,6 +79,8 @@ void App::SetWindow(CoreWindow^ window)
 
 	DisplayInformation::DisplayContentsInvalidated +=
 		ref new TypedEventHandler<DisplayInformation^, Object^>(this, &App::OnDisplayContentsInvalidated);
+
+	//m_Mouse->SetWindow(window);
 }
 
 // Initializes scene resources, or loads a previously saved app state.
@@ -116,6 +121,15 @@ void App::Run()
 		{
 			CoreWindow::GetForCurrentThread()->Dispatcher->ProcessEvents(CoreProcessEventsOption::ProcessOneAndAllPending);
 		}
+		/*
+		auto kb = m_Keyboard->GetState();
+		if (kb.Escape)
+		{
+			m_windowClosed = true;
+		}
+
+		auto mouse = m_Mouse->GetState();
+		*/
 	}
 }
 

@@ -8,14 +8,14 @@ cbuffer ModelViewProjectionConstantBuffer : register(b0)
 struct VertexShaderInput
 {
 	float3 pos : POSITION;
-	float3 color : COLOR0;
+	float3 normal : COLOR0;
     float2 uv : TEXCOORD0;
 };
 
 struct PixelShaderInput
 {
 	float4 pos : SV_POSITION;
-	float3 color : COLOR0;
+    float3 normal : COLOR0;
     float2 uv : TEXCOORD0;
 };
 
@@ -29,7 +29,12 @@ PixelShaderInput main(VertexShaderInput input)
 	pos = mul(pos, projection);
 	output.pos = pos;
 
-	output.color = input.color;
+    //float3x3 normalMat = transpose(inverse(float3x3(model)));
+	/*
+		You would know it's a world normal because no matter how you'd spin the model around, (e.g) the model part facing camera should always be the same color
+	*/
+    output.normal = normalize(mul(input.normal, (float3x3)model)); //To worldNormal
+    //output.normal = input.normal;
 	
     output.uv = input.uv;
 

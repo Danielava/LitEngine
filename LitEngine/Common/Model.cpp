@@ -251,6 +251,7 @@ Model::Model(const std::shared_ptr<DX::DeviceResources>& deviceResources, bool x
 
 	//fileIn.open("Harmony2.txt");
 	fileIn.open("Zelda.txt");
+	//fileIn.open("Terra.txt");
 
 	int nrOfVertices = 0;
 	int nrOfNormals = 0;
@@ -393,8 +394,9 @@ void Model::PushBackVertex(string line)
 	lineStream >> input2;
 	lineStream >> input3;
 
-	//m_Vertices.push_back(DirectX::XMFLOAT3(stof(input1) * 50.0f, stof(input2) * 50.0f, stof(input3) * 50.0f));
-	m_Vertices.push_back(DirectX::XMFLOAT3(stof(input1)*1.3f, stof(input2) * 1.3f, stof(input3) * 1.3f));
+	//m_Vertices.push_back(DirectX::XMFLOAT3(stof(input1) * 50.0f, stof(input2) * 50.0f, stof(input3) * 50.0f)); //For harmony
+	m_Vertices.push_back(DirectX::XMFLOAT3(stof(input1)*1.3f, stof(input2) * 1.3f, stof(input3) * 1.3f)); //For zelda
+	//m_Vertices.push_back(DirectX::XMFLOAT3(stof(input1) * 0.03f, stof(input2) * 0.03f, stof(input3) * 0.03f));
 }
 
 void Model::PushBackNormal(string line)
@@ -709,6 +711,7 @@ void Model::LoadMaterials(const std::shared_ptr<DX::DeviceResources>& deviceReso
 	ifstream fileIn;
 	//fileIn.open("Harmony.mtl");
 	fileIn.open("Zelda.mtl");
+	//fileIn.open("Terra.mtl");
 
 	for (std::string line; std::getline(fileIn, line);)
 	{
@@ -745,10 +748,20 @@ void Model::LoadMaterials(const std::shared_ptr<DX::DeviceResources>& deviceReso
 		}
 	}
 
+	/*
+		Daniel: TODO:
+		Right now, look in the zelda.mtl, and you'll see that you have duplicated some entries.
+		E.g the one for hair, this is because the 3DModel has 2 hair components, both using the same
+		hair texture.
+		What you wanna do in this instance is to make any repeat Model components, points towards an already existing model components resources.
+		So you don't have to create e.g the hair_diff.png multiple times.. that's pretty bad in terms of optimisation.
 	
+	*/
 	for (int i = 0; i < m_MaterialNames.size(); i++)
 	{
-		string filepath = "3DModels/";
+		//string filepath = "3DModels/"; //For Harmony
+		//string filepath = "3DModels/Terra/";
+		string filepath = "3DModels/ZeldaTextures/";
 		filepath = filepath + m_MaterialNames[i].texturePaths[0]; //texturePaths[0] should always be albedo tex!
 		LoadTextureFromFile(deviceResources, filepath, i);
 	}
